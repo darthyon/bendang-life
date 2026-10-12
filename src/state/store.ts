@@ -7,7 +7,9 @@ import { finishSeason, isSeasonOver, leaveForKl, newSeason } from '../sim/season
 import { createRng } from '../sim/rng'
 import { createInitialState } from '../sim/state'
 import { startFishing as startFishingSim } from '../sim/fishing'
-import type { Action, FishId, FishSpot, GameState } from '../sim/types'
+import { setLocale as setI18nLocale, type Locale } from '../i18n'
+import type { Action, FishId, FishSpot, GameState, PresetId, VarietyId } from '../sim/types'
+import { clearSave, loadSave, saveLocale, savedLocale, writeSave } from './persist'
 
 export interface Toast {
   id: number
@@ -34,7 +36,15 @@ interface UiState {
   night: { step: 'card' } | { step: 'recap'; recap: Recap } | null
 }
 
+/** Which screen is up: the front door (spec §6) or the game itself. */
+export type Screen = 'start' | 'intro' | 'onboarding' | 'welcome' | 'game' | 'goodbye'
+
 interface GameStore {
+  screen: Screen
+  locale: Locale
+  settingsOpen: boolean
+  /** Name and preset from onboarding, used when Tok Wan hands over the starter seed. */
+  profile: { name: string; preset: PresetId }
   game: GameState
   seed: number
   /** Saved RNG position so the season replays the same from a save. */
@@ -63,11 +73,25 @@ interface GameStore {
   setStandingPlot: (plotId: number | null) => void
   toast: (key: string, params?: Toast['params']) => void
   dismissToast: (id: number) => void
+  setScreen: (screen: Screen) => void
+  setSettings: (open: boolean) => void
+  setLocale: (locale: Locale) => void
+  setProfile: (profile: { name: string; preset: PresetId }) => void
+  /** Tok Wan's starter seed is picked: the season begins. */
+  beginGame: (starter: VarietyId) => void
+  /** Load the autosave. Returns false when there is none or it can't be read. */
+  continueGame: () => boolean
+  /** Save now (start of day, before leaving to the start screen). */
+  saveNow: () => void
+  deleteSave: () => void
   /** Replace the game state directly. Debug panel only. */
   debugSet: (next: GameState) => void
 }
 
-const seed = Date.now() >>> 0
+const newSeed = () => (Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0
+const seed = newSeed()
+const startLocale = savedLocale() ?? 'kdh'
+setI18nLocale(startLocale)
 let toastId = 0
 const TOAST_MS = 3200
 
@@ -100,7 +124,11 @@ export const useGame = create<GameStore>((set, get) => {
   }
 
   return {
-    // Onboarding (M6) picks the starter seed; until then the game starts with MR297.
+    screen: 'start',
+    locale: startLocale,
+    settingsOpen: false,
+    profile: { name: '', preset: 'hat' },
+    // Placeholder until Tok Wan hands over the starter seed (beginGame) or a save loads.
     game: createInitialState({ starter: 'mr297' }),
     seed,
     rngState: seed,
@@ -151,6 +179,8 @@ export const useGame = create<GameStore>((set, get) => {
       const { game } = get()
       if (isSeasonOver(game)) commit(finishSeason(game))
       set((st) => ({ ui: { ...st.ui, night: null, morning: st.ui.morning + 1 } }))
+      // Autosave at the start of each day (AGENTS.md "Saves").
+      get().saveNow()
     },
     startFishing: (spot) => {
       const { game } = get()
@@ -197,13 +227,55 @@ export const useGame = create<GameStore>((set, get) => {
       window.setTimeout(() => get().dismissToast(id), TOAST_MS)
     },
     dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+    setScreen: (screen) => set({ screen, settingsOpen: false }),
+    setSettings: (open) => set({ settingsOpen: open }),
+    setLocale: (locale) => {
+      setI18nLocale(locale)
+      saveLocale(locale)
+      set({ locale })
+    },
+    setProfile: (profile) => set({ profile }),
+    beginGame: (starter) => {
+      const { profile } = get()
+      const fresh = newSeed()
+      set({
+        game: createInitialState({ starter, name: profile.name, preset: profile.preset }),
+        seed: fresh,
+        rngState: fresh,
+        screen: 'game',
+        toasts: [],
+        ui: { ...get().ui, night: null, fishing: null, phoneOpen: false, kitabOpen: false },
+      })
+      get().saveNow()
+    },
+    continueGame: () => {
+      const save = loadSave()
+      if (!save) return false
+      set({
+        game: save.state,
+        seed: save.seed,
+        rngState: save.rngState,
+        screen: 'game',
+        toasts: [],
+        ui: { ...get().ui, night: null, fishing: null, phoneOpen: false, kitabOpen: false },
+      })
+      return true
+    },
+    saveNow: () => {
+      const { game, seed: s, rngState } = get()
+      if (writeSave({ state: game, seed: s, rngState })) get().toast('toasts.saved')
+    },
+    deleteSave: () => {
+      clearSave()
+    },
     debugSet: (next) => set({ game: next }),
   }
 })
 
 /** True while time should stand still (spec §4.2): phone, Kitab, fishing, night scene, report. */
 export function isPaused(): boolean {
-  const { ui, game } = useGame.getState()
+  const { ui, game, screen, settingsOpen } = useGame.getState()
+  if (screen !== 'game' || settingsOpen) return true
   return (
     ui.phoneOpen ||
     ui.kitabOpen ||

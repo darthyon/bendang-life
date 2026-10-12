@@ -1,13 +1,14 @@
 import { t } from '../../i18n'
 import { useGame } from '../../state/store'
-import { BookIcon, PhoneIcon } from '../icons'
+import { BookIcon, GearIcon, PhoneIcon } from '../icons'
 
-/** Left rail (spec §7): Fon and Kitab. Tetapan joins with the settings screen. */
+/** Left rail (spec §7): Fon, Kitab, Tetapan. */
 export function LeftRail() {
   const phoneOpen = useGame((s) => s.ui.phoneOpen)
   const kitabOpen = useGame((s) => s.ui.kitabOpen)
   const setPhone = useGame((s) => s.setPhone)
   const setKitab = useGame((s) => s.setKitab)
+  const setSettings = useGame((s) => s.setSettings)
   return (
     <nav className="rail">
       <button
@@ -28,6 +29,10 @@ export function LeftRail() {
       >
         <BookIcon size={24} className="rail__icon" />
         <span>{t('hud.nav_kitab')}</span>
+      </button>
+      <button type="button" className="panel rail__item" onClick={() => setSettings(true)}>
+        <GearIcon size={24} className="rail__icon" />
+        <span>{t('hud.nav_settings')}</span>
       </button>
     </nav>
   )

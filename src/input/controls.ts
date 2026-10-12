@@ -11,7 +11,10 @@ export function attachControls(): () => void {
     ) {
       return
     }
-    const { ui, game, sleep, setPhone, setKitab, setPlotPanel } = useGame.getState()
+    const { ui, game, screen, settingsOpen, sleep, setPhone, setKitab, setPlotPanel, setSettings } =
+      useGame.getState()
+    if (e.code === 'Escape' && settingsOpen) return setSettings(false)
+    if (screen !== 'game' || settingsOpen) return
     if (e.code === 'Tab') e.preventDefault()
     // The night scene and the season report take over; day controls wait.
     if (ui.night || game.phase !== 'playing') return

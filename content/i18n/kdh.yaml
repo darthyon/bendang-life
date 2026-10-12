@@ -6,6 +6,11 @@
 # Placeholders in {braces} are filled by code. Keep keys identical to en.yaml.
 
 ui:
+  goodbye_title: "Jumpa lagi"  # TODO proofread
+  goodbye_body: "Bendang ni dok tunggu hang balik."  # TODO proofread
+  goodbye_back: "Balik menu"  # TODO proofread
+  new_game_confirm: "Nak mula baru? Game yang dah simpan tu hilang."  # TODO proofread
+  new_game_yes: "Ya, mula baru"  # TODO proofread
   title: "Bendang Life"
   tagline: "Tanam. Jaga. Tuai."
   start: "Mula Main"
@@ -26,6 +31,10 @@ ui:
   support: "Belanja kopi kat Ko-fi"
 
 onboarding:
+  preset_hat: "Terendak"  # TODO proofread
+  preset_cap: "Kap"  # TODO proofread
+  preset_scarf: "Tudung"  # TODO proofread
+  preset_bun: "Sanggui"  # TODO proofread
   step: "Langkah {n}/{total}"
   pick_character: "Pilih watak hang"
   enter_name: "Sapa nama hang?"
@@ -427,3 +436,11 @@ reasons:  # TODO proofread
   not_ripe: "Padi belum masak lagi."  # TODO proofread
   loan_limit: "Dah lebih had Agribank tu."  # TODO proofread
   not_now: "Tak boleh buat la ni."  # TODO proofread
+
+settings:  # TODO proofread
+  title: "Tetapan"
+  to_start: "Simpan, balik menu"  # TODO proofread
+  delete: "Buang game yang simpan"  # TODO proofread
+  delete_confirm: "Betoi nak buang? Tak boleh ambik balik dah."  # TODO proofread
+  delete_yes: "Ya, buang"  # TODO proofread
+  deleted: "Dah buang."  # TODO proofread

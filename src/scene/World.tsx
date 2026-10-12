@@ -31,7 +31,10 @@ export function World() {
   const targetRef = useRef<Target | null>(null)
   const game = useGame((s) => s.game)
   const setPlotPanel = useGame((s) => s.setPlotPanel)
-  const night = useGame((s) => s.ui.night !== null)
+  // Night mood for the night scene and behind the start screens.
+  const night = useGame(
+    (s) => s.ui.night !== null || (s.screen !== 'game' && s.screen !== 'welcome'),
+  )
   // World-space labels hide while anything pauses the game (overlays sit above them).
   const paused = useGame(
     (s) =>

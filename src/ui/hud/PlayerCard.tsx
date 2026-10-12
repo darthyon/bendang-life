@@ -1,7 +1,8 @@
 import { t } from '../../i18n'
 import { taskStatus } from '../../sim/tasks'
 import { useGame } from '../../state/store'
-import { CheckIcon, FarmerIcon, SeedlingIcon } from '../icons'
+import { Avatar } from '../Avatar'
+import { CheckIcon, SeedlingIcon } from '../icons'
 
 /** Top-left: who you are, and today's jobs (spec §7). */
 export function PlayerCard() {
@@ -13,10 +14,9 @@ export function PlayerCard() {
     <div className="hud-stack">
       <section className="panel player">
         <span className="player__avatar">
-          <FarmerIcon size={30} />
+          <Avatar preset={game.player.preset} size={44} />
         </span>
-        {/* M6 replaces the placeholder with the name chosen in onboarding. */}
-        <h1 className="player__name">{t('hud.player_placeholder')}</h1>
+        <h1 className="player__name">{game.player.name || t('hud.player_placeholder')}</h1>
       </section>
 
       <section className="panel tasks" aria-labelledby="tasks-title">

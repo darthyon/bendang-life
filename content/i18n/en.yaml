@@ -1,6 +1,11 @@
 # Standard English: the plain, formal option. Keep keys identical to kdh.yaml.
 
 ui:
+  goodbye_title: "See you again"
+  goodbye_body: "The bendang will be here when you come back."
+  goodbye_back: "Back to the menu"
+  new_game_confirm: "Start a new game? Your saved game will be replaced."
+  new_game_yes: "Yes, start over"
   title: "Bendang Life"
   tagline: "Plant. Tend. Harvest."
   start: "Start"
@@ -21,6 +26,10 @@ ui:
   support: "Buy me a coffee on Ko-fi"
 
 onboarding:
+  preset_hat: "Straw hat"
+  preset_cap: "Cap"
+  preset_scarf: "Headscarf"
+  preset_bun: "Hair bun"
   step: "Step {n} of {total}"
   pick_character: "Choose your character"
   enter_name: "Enter your name"
@@ -422,3 +431,11 @@ reasons:
   not_ripe: "The padi isn't ripe yet."
   loan_limit: "That's over the Agribank limit."
   not_now: "You can't do that right now."
+
+settings:
+  title: "Settings"
+  to_start: "Save and go to the menu"
+  delete: "Delete saved game"
+  delete_confirm: "Delete your saved game? This can't be undone."
+  delete_yes: "Yes, delete it"
+  deleted: "Saved game deleted."
