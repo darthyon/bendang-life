@@ -1,0 +1,370 @@
+# Loghat Kedah: the default language. Proofread by Yon before release.
+# Rules: talk to the player as "hang"; NPCs call themselves "saya" (or "aku" with close friends).
+# Tok is the exception: Tok calls themself "Tok", as Kedah grandparents do.
+# Do not use "cheq" for now: it reads soft and manja. Reserved for a possible future cutesy NPC.
+# Keep button labels short and readable for non-Kedahans; put the full loghat in dialogue, cards and toasts.
+# Placeholders in {braces} are filled by code. Keep keys identical to en.yaml.
+
+ui:
+  title: "Bendang Life"
+  tagline: "Tanam. Jaga. Tuai."
+  start: "Mula Main"
+  continue: "Sambung"
+  settings: "Tetapan"
+  quit: "Keluaq"
+  back: "Balik"
+  next: "Teruih"
+  confirm: "Okey, jadi"
+  cancel: "Tak jadi"
+  close: "Tutup"
+  language: "Bahasa"
+  lang_kdh: "Loghat Kedah"
+  lang_en: "English"
+  rotate_title: "Pusing fon hang"
+  rotate_body: "Bendang ni main melintang. Pusing fon ke tepi dulu noh."
+  disclaimer: "Bendang Life ni ambik ilham dari kajian betoi pasal tanam padi kat Kedah. Watak, hantu raya dengan setengah nama tu rekaan ja. Nombor ikut laporan 2024–2026, mungkin dah berubah."
+  support: "Belanja kopi kat Ko-fi"
+
+onboarding:
+  step: "Langkah {n}/{total}"
+  pick_character: "Pilih watak hang"
+  enter_name: "Sapa nama hang?"
+  enter_name_hint: "Orang kampung panggil hang guna nama ni."
+  ready: "Dah sedia ka?"
+  summary_character: "Watak hang"
+  summary_name: "Nama hang"
+  welcome_title: "Mai la, {name}!"
+  welcome_body: "{bendang} dok tunggu hang."
+  welcome_cta: "Jom!"
+
+story:                    # TODO proofread
+  intro_1: "KL. Pukui 11 malam. Fon hang bergetaq."
+  intro_2: "Voice note dari Tok: \"Lutut Tok dah tak laghat. Musim ni hang balik tolong Tok noh? Kalau tak, Tok sewakan ja la bendang tu kat orang.\""
+  intro_3: "Pagi esok, hang naik bas balik Kedah."
+  skip_intro: "Langkau"
+  tok: "Tok Wan"
+  tok_welcome: "\"Ni duit modal Tok, RM{coins}. Dengan buku ni. Semua Tok tulih dalam ni. Jangan hilang noh.\""
+  starter_title: "Tok Wan ada tiga guni benih. Pilih satu."  # TODO proofread
+  starter_body: "Yang lain Tok simpan. Lepas ni kalau nak lagi, order guna fon."  # TODO proofread
+  starter_pick: "Ambik yang ni"  # TODO proofread
+  tok_tutorial: "\"Bajak Petak 1 dulu, pastu tanam benih tu. Tok tunggu kat pondok ni.\""
+  live_unlock: "Kawan-kawan KL dok tanya: \"Hang buat apa kat kampung?\" Bendang hang dah ada rupa. Boleh la live."
+  plot_next_season: "\"Tok tengok hang dah pandai. Musim depan Tok bagi Petak {n} pulak.\""
+  verdict_untung: "\"Tok tak sangka. Bendang ni ada harga lagi.\""
+  verdict_pulang_modal: "\"Tak untung, tak rugi. Musim pertama, okey la tu.\""
+  verdict_rugi: "\"Takpa. Tok pun rugi dulu-dulu. Bendang ni sabaq.\""
+  choice_title: "Musim depan macam mana?"
+  choice_stay: "Dok sini, tanam lagi"
+  choice_leave: "Balik KL"
+  ending_leave: "Hang balik KL dengan {kg} kg hasil dan {facts} benda baru dalam kepala. Tiap kali makan nasi, hang teringat bendang Tok."
+  ending_thanks: "Terima kasih main."
+
+tutorial:
+  title: "Cara Main"
+  body: "Guna kekunci ni nak jalan dengan buat keja."
+  move: "Jalan guna WASD"
+  interact: "Tekan E nak buat keja"
+  interact_body: "Contoh: tanam padi, bukak ayaq, tuai, macam-macam lagi."
+  panel: "Tekan Tab nak tengok petak"
+  skip: "Tekan Z nak tidoq"  # TODO proofread
+  touch: "Ibu jari kiri jalan, ibu jari kanan buat keja."
+  first_task: "Bajak Petak 1, pastu tanam benih Tok Wan."  # TODO proofread
+  phone: "Tekan F nak bukak fon. Masa berhenti bila fon bukak."  # TODO proofread
+
+hud:
+  coins: "Duit"
+  seed_bags: "Guni benih"
+  fert_bags: "Guni baja"
+  fish: "Ikan"
+  week_day: "Minggu {w}, Hari {d}"
+  tasks_today: "Keja Hari Ni"
+  all_done: "Habih dah! Boleh pi tidoq."  # TODO proofread
+  skip_sleep: "Pi tidoq"
+  nav_phone: "Fon"
+  nav_kitab: "Kitab"
+  nav_settings: "Tetapan"
+  weekday_1: "Isnin"
+  weekday_2: "Selasa"
+  weekday_3: "Rabu"
+  weekday_4: "Khamis"
+  weekday_5: "Jumaat"
+  weekday_6: "Sabtu"
+  weekday_7: "Ahad"
+
+stages:
+  locked: "Berkunci"
+  empty: "Kosong"
+  ploughed: "Dah bajak"
+  tabur: "Tabur"
+  anak_padi: "Anak padi"
+  beranak_bunting: "Beranak & bunting"
+  masak: "Masak"
+  sedia_tuai: "Sedia tuai"
+  harvested: "Lepaih tuai"
+
+plot_panel:
+  title: "Petak {n}"
+  variety: "Benih"
+  stage_day: "{stage} · hari ke-{day}"
+  water: "Ayaq"
+  water_target: "Patut {min}–{max} cm"
+  water_ok: "Elok"
+  water_low: "Kering ni"
+  water_high: "Banjiq dah"
+  fert: "Baja"
+  fert_progress: "Peringkat {done}/4"
+  fert_next: "Lepaih ni hari {day}"
+  health: "Sihat"
+  weeds: "Rumpai"
+  snails: "Siput"
+  none: "Takdak"
+  ask_kitab: "Tanya Kitab"
+  locked: "Tok Wan bagi petak ni musim {n}."  # TODO proofread
+  empty: "Belum tanam lagi."
+  hours: "{h} jam"
+
+actions:
+  bajak: "Bajak"
+  bajak_hand: "Cangkul sendiri"
+  tanam: "Tanam padi"
+  gate_open: "Bukak pintu ayaq"
+  gate_close: "Tutup pintu ayaq"
+  baja: "Tabuq baja"
+  rumpai: "Cabut rumpai"
+  siput: "Kutip siput"
+  tuai: "Tuai"
+  tuai_hand: "Sabit sendiri"
+  pancing: "Pi mancing"
+  serkap: "Serkap ikan"
+  jual_ikan: "Jual ikan"
+  tidur: "Tidoq"
+
+phone:                    # TODO proofread
+  title: "Fon"
+  app_kedai: "Kedai Tani"
+  app_bank: "Agribank"
+  app_jual: "Jual Ikan"
+  app_live: "Live"
+  delivered: "Barang dah sampai kat tangga pondok."
+  fish_sold: "Ikan dah jual. Dapat RM{n}."
+
+shop:
+  title: "Kedai Tani"
+  buy: "Beli"
+  owned: "Ada {n}"
+  not_enough: "Duit tak cukup la, wei."
+  seeds: "Benih"
+  baja_bag: "Guni baja"
+
+varieties:
+  mr297:
+    name: "MR297"
+    desc: "Paling ramai tanam kat Muda. Senang jaga."
+  mr220cl2:
+    name: "MR220 CL2"
+    desc: "Rumpai payah naik. Mahai sikit."  # TODO proofread
+  mrq76:
+    name: "MRQ76"
+    desc: "Padi wangi. Hasil kurang sikit, harga mahai sikit. Kena tuai tepat masa."
+
+bank:
+  title: "Agribank"
+  body: "Pinjam modal musim ni, bayaq lepaih tuai. Kadar lebih kurang 2% semusim."
+  borrow: "Pinjam RM{amount}"
+  balance: "Hutang Agribank: RM{amount}"
+  repaid: "Hutang Agribank dah langsai."
+  rolled: "Tak cukup nak bayaq. Baki RM{amount} masuk musim depan."
+  repay: "Bayaq RM{amount}"  # TODO proofread
+  repay_all: "Langsai semua"  # TODO proofread
+
+night:
+  bala_title: "Ada benda jadi malam tadi"
+  bala_body: "Hang nak buat lagu mana?"
+  rezeki_title: "Ada orang mai malam ni"
+  rezeki_body: "Ambik satu, atau tolak semua."
+  decline_all: "Tak mau la"
+  bala: "Bala"
+  rezeki: "Rezeki"
+  pick_one: "Pilih satu"
+  lasts_days: "Kekal {n} hari"
+  cost_hours_tomorrow: "Esok kurang {h} jam"
+  cost_coins: "−RM{n}"
+  quiet: "Malam ni senyap ja. Bunyi cengkerik dengan katak."
+
+events:                   # titles and new cards: TODO proofread
+  hujan_lebat:
+    title: "Hujan Tak Ingat Dunia"
+    real: "Hujan lebat"
+    body: "Hujan turun macam tak mau berhenti. Ayaq dalam petak dok naik."
+    buka_keluar: "Bukak pintu buang ayaq"
+    sewa_pam: "Sewa pam, sedut ayaq keluaq"
+    biar: "Biaq pi la"
+  panas_terik:
+    title: "Matahari Dua Biji"
+    real: "Panaih terik"
+    body: "Panaih sampai ayaq dalam petak pun nak kering."
+    pam_air: "Pam ayaq (minyak diesel)"
+    jaga_pintu: "Jaga pintu ayaq tiap hari"
+    biar: "Biaq pi la"
+  serangan_siput:
+    title: "Geng Gondang Emas"
+    real: "Siput gondang emas"
+    body: "Siput gondang emas dok makan anak padi hang."
+    kutip_sendiri: "Kutip sendiri"
+    pinjam_itik: "Pinjam itik jiran"
+    biar: "Biaq pi la"
+  tikus_malam:
+    title: "Sindiket Tikus Malam"
+    real: "Serangan tikus"
+    body: "Malam tadi tikus ratah padi hang. Tikus tak kira bencana, takdak pampasan."
+    gotong_royong: "Ajak orang kampung buru tikus"
+    umpan: "Beli umpan"
+    biar: "Biaq pi la"
+  padi_angin:
+    title: "Padi Angin Menyamar"
+    real: "Padi angin (padi liar)"
+    body: "Ada padi yang tinggi sikit, gugoq awai. Rupa sama, tapi bukan padi hang."
+    cabut_sendiri: "Cabut sendiri"
+    racun_rumpai: "Beli racun rumpai"
+    biar: "Biaq pi la"
+  fon_jatuh:
+    title: "Fon Jatuh Dalam Bendang"
+    real: "Fon basah"
+    body: "Plup. Fon hang dah selam dalam lumpuq."
+    rendam_beras: "Rendam dalam beras"
+    fon_cikai: "Beli fon cikai"
+    biar: "Biaq pi la, hidup tanpa fon"
+  ceramah_ppkk:
+    title: "Ceramah PPKK"
+    real: "Ceramah baja"
+    body: "Esok ada ceramah pasal baja. Ada kuih, ada baja free. Tapi lama, mak aih."
+    pergi: "Pi dengaq"
+  pasar_malam:
+    title: "Pasar Malam"
+    real: "Jual ikan kat pasar malam"
+    body: "Esok malam ada pasar malam. Ikan boleh jual mahai sikit."
+    buka_gerai: "Bukak gerai"
+  kucing_oren:
+    title: "Kucing Oren Arwah"
+    real: "Kucing kampung"
+    body: "Kucing oren bawak hadiah: seekoq keli. Tapi dia tolak seguni baja masuk parit."
+    terima_hadiah: "Terima ja la"
+  kenduri_sebelah:
+    title: "Kenduri Sebelah"
+    real: "Rewang kenduri"
+    body: "Rumah sebelah buat kenduri esok. Mak cik-mak cik dah tanya hang mai ka dak."
+    pi_rewang: "Pi rewang"
+
+raya:                     # Hantu Raya, the companion. Lines by Yon.
+  name: "Raya"
+  arrive_title: "Raya Pindah Masuk"
+  arrive_body: "Salam bang. Boleh share password WiFi? Saya nak live sambil buat keja."
+  arrive_ok: "Okey la..."
+  idle_1: "Bayaq DuitNow ja bang, untuk top-up data."  # TODO proofread
+  idle_2: "Bang, bendang ni aesthetic gila."  # TODO proofread
+  idle_3: "Saya bukan malaih bang. Saya jimat tenaga."  # TODO proofread
+  guard: "Suruh Raya jaga"
+  guard_ok: "Dah siap bang. Jangan lupa bagi lima bintang noh."
+  ghosted: "Seen 2:14 pagi."
+
+live:                     # TODO proofread
+  rail: "Live"
+  locked: "Buka hari {day}"  # TODO proofread
+  start: "Mula live (1 jam)"
+  done_today: "Dah live hari ni. Esok la pulak."
+  result: "Live habih. {viewers} orang tengok, dapat RM{coins}."
+  followers: "Pengikut: {n}"
+  bonus_farm_job: "Penonton suka tengok hang buat keja bendang"  # TODO proofread
+  bonus_fish: "Ikan hang curi tumpuan"
+  bonus_harvest: "Hari tuai! Satu kampung mai tengok"
+
+tasks:
+  beli_benih: "Order benih guna fon"  # TODO proofread
+  bajak: "Bajak Petak {n}"
+  tanam: "Tanam padi kat Petak {n}"
+  naik_air: "Naikkan ayaq Petak {n} sampai {min}–{max} cm"
+  baja: "Tabuq baja peringkat {stage} kat Petak {n}"
+  siput: "Kutip siput kat Petak {n}"
+  rumpai: "Cabut rumpai kat Petak {n}"
+  kering: "Keringkan Petak {n} sebelum tuai"
+  tuai: "Tuai Petak {n} bila bulir dah kuning 85–90%"
+
+fishing:
+  title_pancing: "Mancing kat longkang"
+  title_serkap: "Serkap dalam lumpuq"
+  hint: "Tekan E bila jarum masuk hijau"
+  caught: "Dapat {fish}!"
+  missed: "Terlepas. Ikan tu bijak."
+  none_left: "Ikan dah habih kat sini hari ni."
+  sell: "Jual: RM{n}"
+  keli: "Keli"
+  haruan: "Haruan"
+  puyu: "Puyu"
+  sepat: "Sepat"
+  tilapia: "Tilapia"
+
+report:
+  title: "Laporan Musim"
+  yield: "Hasil: {kg} kg"
+  grade: "Gred"
+  gross: "Jualan kasaq"
+  potongan: "Potongan"
+  subsidy: "Subsidi"
+  costs: "Belanja"
+  loan: "Bayaq Agribank"
+  net: "Untung bersih"
+  loss: "Rugi"
+  did_well: "Hang buat betoi"
+  missed: "Hang terlepas"
+  facts_learned: "Benda baru hang belajaq"
+  new_season: "Musim Baru"
+
+kitab:
+  title: "Kitab Bendang"
+  subtitle: "Buku catatan Tok"
+  tab_notes: "Nota"  # TODO proofread
+  tab_unlocks: "Buka"  # TODO proofread
+  unlock_live: "Live"
+  unlock_raya: "Raya, hantu Gen Z"
+  unlock_plot: "Petak {n}"
+  hint_day: "Hari {day}"
+  hint_season: "Musim {n}"
+  empty: "Belum ada apa. Pi buat keja dulu."
+  source: "Sumber"
+  rc: "Rice Check no. {n}"
+  locked: "???"
+
+facts:
+  fact_water_depth: "Lepaih tabur, biaq tanah lembap seminggu. Lepaih tu jaga ayaq 5–7 cm, pastu 5–10 cm masa padi beranak."
+  fact_drain_before_harvest: "Keringkan petak 10–14 hari sebelum tuai, baru padi masak sekata dan senang jentuai masuk."
+  fact_harvest_85: "Tuai bila 85–90% bulir dah kuning. Awai sangat, padi muda kena potong. Lambat sangat, bulir gugoq."
+  fact_four_fertiliser: "Baja padi ada empat peringkat ikut umur padi. MADA agih baja sebatian dengan urea ikut peringkat."
+  fact_seed_soak: "Benih kena rendam 24 jam, pastu peram 24–48 jam sampai bercambah, baru tabur."
+  fact_plough_timing: "Bajak kena ikut masa: 30 hari sebelum tanam kalau kering, 7–10 hari, atau 1–2 hari kalau tanah basah."
+  fact_snail_first_month: "Siput gondang emas paling bahaya masa anak padi umur 2–4 minggu. Serangan teruk boleh habih sampai 93% hasil."
+  fact_weed_window: "Rumpai paling bahaya awal musim. Kalau tak cabut masa tu, hasil jatuh."
+  fact_floor_price: "Harga lantai padi RM1,500 satu tan, campuq subsidi RM500 satu tan."
+  fact_cost_per_hectare: "Kos tanam padi sekarang lebih kurang RM6,000–7,000 sehektar. Untung pesawah nipis ja."
+  fact_tikus_bukan_bencana: "Serangan tikus tak kira bencana, so takdak pampasan. Sebab tu orang kampung buat gotong-royong buru tikus."
+  fact_mr297: "MR297 benih paling popular kat kawasan Muda. Ramai sangat nak, sampai kadang-kadang tak cukup."
+  fact_cl2_blast: "MR220 CL2 dibawak masuk nak lawan padi angin. Tapi tahun 2015, hampir 80% kes karah kat Muda kena sawah hat tanam varieti ni."
+  fact_mrq76: "MRQ76 padi wangi tempatan. MARDI kaji jarak tanam dengan umur semai dia."
+  fact_fish_in_bendang: "Masa bajak, haruan, keli, puyu dengan sepat timbul dalam lumpuq. Orang Padang Terap ikut belakang traktor bawak serkap."
+  fact_agribank_loan: "Bank pertanian bagi pinjaman modal musim, bayaq lepaih tuai. Ramai pesawah pinjam RM7,000–10,000 untuk lebih kurang tiga hektar."
+  fact_hand_vs_machine: "Sewa traktor dengan jentuai makin mahai sebab diesel takdak subsidi. Buat sendiri jimat duit, tapi makan masa."
+  fact_padi_angin: "Padi angin tu padi liar. Rupa sama macam padi, tapi tinggi sikit dan bijinya gugoq awai. Kat kawasan MADA, dia boleh potong hasil 60–90%."  # TODO proofread
+  fact_phone_rice: "Rendam fon basah dalam beras tu mitos. Apple sendiri pesan jangan: habuk beras boleh masuk dalam fon. Keringkan dengan angin ja."  # TODO proofread
+
+toasts:
+  gate_open: "Pintu ayaq dah bukak. Ayaq masuk petak."
+  gate_close: "Pintu ayaq dah tutup."
+  ploughed: "Petak dah bajak."
+  sown: "Padi dah tanam. Doa-doa la elok."
+  fertilised: "Baja dah tabuq."
+  weeded: "Rumpai dah cabut."
+  snails: "Siput dah kutip."
+  harvested: "Tuai siap! {kg} kg."
+  no_time: "Tak dan dah hari ni. Esok la."
+  fact_unlocked: "Kitab: benda baru!"
+  saved: "Dah simpan."
+

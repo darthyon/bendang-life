@@ -1,0 +1,87 @@
+# Night cards, styled as trading cards (our own frame design). Two kinds:
+#   bala:   something happens; the player picks 1 of 3 responses.
+#   rezeki: an offer; the player takes it or declines.
+# Text lives in i18n under events.<id>.* (title = card name, real = what it really is).
+# Balance rules (enforced in src/sim/events.ts and tested):
+#   - every bala has a free option and at least one money or time option
+#   - no rezeki is purely positive (each has a gain and a cost)
+#   - never two bala nights in a row
+# Money values are tuning.
+
+# ---------- BALA ----------
+- id: hujan_lebat
+  kind: bala
+  stages: [anak_padi, beranak_bunting]
+  options:
+    - { id: buka_keluar, cost: { hours_tomorrow: 1 }, effects: [] }
+    - { id: sewa_pam, cost: { coins: 80 }, effects: [{ type: health, value: 2 }] }
+    - { id: biar, cost: {}, effects: [{ type: water_cm, value: 4 }] }
+
+- id: panas_terik
+  kind: bala
+  stages: [anak_padi, beranak_bunting, masak]
+  options:
+    - { id: pam_air, cost: { coins: 70 }, effects: [] }
+    - { id: jaga_pintu, cost: { hours_per_day: 1, days: 3 }, effects: [] }
+    - { id: biar, cost: {}, effects: [{ type: water_cm_per_day, value: -2, days: 3 }] }
+
+- id: serangan_siput
+  kind: bala
+  stages: [anak_padi]
+  options:
+    - { id: kutip_sendiri, cost: { hours_tomorrow: 2 }, effects: [] }
+    - { id: pinjam_itik, cost: { coins: 60 }, effects: [] }
+    - { id: biar, cost: {}, effects: [{ type: health_per_day, value: -4, days: 3 }] }
+  fact_id: fact_snail_first_month
+
+- id: tikus_malam
+  kind: bala
+  stages: [beranak_bunting, masak]
+  hantu_raya_can_guard: true      # adds the "suruh Raya jaga" option once he has moved in
+  options:
+    - { id: gotong_royong, cost: { hours_tomorrow: 3 }, effects: [{ type: unlock_fact, id: fact_tikus_bukan_bencana }] }
+    - { id: umpan, cost: { coins: 70 }, effects: [] }
+    - { id: biar, cost: {}, effects: [{ type: yield_multiplier, value: 0.95 }] }
+
+- id: padi_angin
+  kind: bala
+  stages: [anak_padi, beranak_bunting]
+  options:
+    - { id: cabut_sendiri, cost: { hours_tomorrow: 2 }, effects: [] }
+    - { id: racun_rumpai, cost: { coins: 60 }, effects: [] }
+    - { id: biar, cost: {}, effects: [{ type: yield_multiplier, value: 0.97 }] }
+  fact_id: fact_padi_angin
+
+- id: fon_jatuh
+  kind: bala
+  stages: [tabur, anak_padi, beranak_bunting, masak, sedia_tuai]
+  options:
+    - { id: rendam_beras, cost: {}, effects: [{ type: chance, value: 0.5, then: [{ type: phone_off_days, value: 2 }] }, { type: unlock_fact, id: fact_phone_rice }] }
+    - { id: fon_cikai, cost: { coins: 150 }, effects: [] }
+    - { id: biar, cost: {}, effects: [{ type: phone_off_days, value: 2 }] }
+  # rendam_beras is the free gamble: works half the time, and teaches that the rice trick is a myth.
+
+# ---------- REZEKI ----------
+- id: ceramah_ppkk
+  kind: rezeki
+  stages: [anak_padi, beranak_bunting]
+  options:
+    - { id: pergi, gain: [{ type: item, item: baja_bag, count: 1 }], cost: { hours_tomorrow: 2 } }
+
+- id: pasar_malam
+  kind: rezeki
+  stages: [anak_padi, beranak_bunting, masak, sedia_tuai]
+  options:
+    - { id: buka_gerai, gain: [{ type: fish_price_multiplier, value: 1.5, days: 1 }], cost: { coins: 20 } }
+
+- id: kucing_oren
+  kind: rezeki
+  stages: [anak_padi, beranak_bunting, masak]
+  options:
+    - { id: terima_hadiah, gain: [{ type: fish, fish: keli, count: 1 }], cost: { items: { baja_bag: 1 } } }
+
+- id: kenduri_sebelah
+  kind: rezeki
+  stages: [anak_padi, beranak_bunting, masak]
+  options:
+    - { id: pi_rewang, gain: [{ type: followers, value: 20, needs_live: true }, { type: unlock_random_fact }], cost: { hours_tomorrow: 3 } }

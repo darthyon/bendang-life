@@ -1,0 +1,140 @@
+# Game rules and tuning values. src/sim reads only from content/*.yaml.
+# Values marked "# tuning" are balance choices. Everything else cites a real source.
+
+season:
+  days: 20                       # tuning: stands for a ~110-day real season
+
+clock:
+  pause_when: [phone_open, kitab_open, night_card, menu]
+  day_start_hour: 6
+  night_start_hour: 19
+  real_seconds_per_game_hour: 5  # tuning: a full idle day is ~65 s
+  night_scene_seconds: 3         # tuning: non-card nights
+  sleep_anywhere: true           # Tidur (Z) ends the day from anywhere; 7 PM ends it automatically
+
+# Real targets from Rice Check RC 33-37: saturated to day 7, 5-7 cm days 7-40,
+# 5-10 cm days 40-90, drain 10-14 days before harvest. https://doi.org/10.1186/s40066-025-00524-5
+water:
+  cap_cm: 10
+  gates:                                # which plots each sluice gate feeds
+    A: [1, 2]
+    B: [3, 4]
+  gate_open_gain_cm_per_day: 2          # tuning
+  gate_closed_loss_cm_per_day: 1        # tuning
+  health_penalty_per_day_off_target: 6  # tuning
+  targets:
+    - { from_day: 1,  to_day: 1,  min_cm: 0, max_cm: 1,  stage: tabur }
+    - { from_day: 2,  to_day: 7,  min_cm: 5, max_cm: 7,  stage: anak_padi }
+    - { from_day: 8,  to_day: 16, min_cm: 5, max_cm: 10, stage: beranak_bunting }
+    - { from_day: 17, to_day: 18, min_cm: 0, max_cm: 1,  stage: masak }
+    - { from_day: 19, to_day: 20, min_cm: 0, max_cm: 1,  stage: sedia_tuai }
+
+fertiliser:                       # four stages, RC 26-29; days are tuning
+  stage_days: [2, 6, 10, 13]
+  window_days: 2
+  missed_stage_yield_penalty: 0.10
+
+health:                           # per plot
+  start: 100
+  max: 100
+# Yield = variety base_yield x health/100 x fertiliser x harvest timing x hand loss x card multipliers
+
+weeds:
+  critical_window: { from_day: 1, to_day: 12 }   # real ~day 5-64, scaled
+  spawn_chance_per_day: 0.25        # tuning
+  health_penalty_per_patch_per_day: 2
+
+snails:
+  risk_window: { from_day: 2, to_day: 6 }        # first ~4 weeks real, scaled
+  spawn_chance_per_day: 0.3         # tuning
+  health_penalty_per_patch_per_day: 4
+
+harvest:
+  ideal_days: [19, 20]              # 85-90% yellow grain, RC 46
+  early_yield_factor: 0.8           # tuning
+  late_yield_factor_per_day: 0.92   # tuning
+  potongan:                         # tuning; teaches draining before harvest
+    base: 0.05
+    not_drained: 0.15               # water above drained_max_cm at harvest
+    drained_max_cm: 1
+    late: 0.10                      # harvested after the last ideal day
+    max: 0.30
+
+# Each action: hours it takes. Every job is done by the player; no hiring in the MVP.
+# Hours are tuning, set so 4 plots can be ploughed and sown in one 13-hour day.
+actions:
+  bajak:     { hours: 2 }
+  tanam:     { hours: 1, needs: benih_bag }
+  pintu_air: { hours: 0.5 }
+  baja:      { hours: 1, needs: baja_bag }
+  rumpai:    { hours: 1 }
+  siput:     { hours: 1 }
+  tuai:      { hours: 2 }
+  pancing: { hours: 1 }
+  serkap: { hours: 1 }
+
+economy:
+  start_coins: 1250
+  starter_seed: { bags: 1, choose_from: [mr297, mr220cl2, mrq76], season: 1 }   # Tok Wan's gift, picked from 3 cards
+  sale_price_per_kg: 1.50   # RM1,500/tonne floor, https://www.kosmo.com.my/?p=724167
+  subsidy_per_kg: 0.50      # RM500/tonne SSHP, https://www.bharian.com.my/amp/berita/nasional/2025/12/1481362/bhplus
+  # Prices are tuning. Real reference: a relong costs about RM1,800 a season with machines and labour
+  # (from RM6,000-7,000 from RM6,000-7,000/ha, https://www.bharian.com.my/amp/berita/nasional/2026/05/1543195/bhplus)
+  prices:
+    baja_bag: 110
+  # benih prices live in varieties.yaml
+
+loan:                         # "Agribank", satirical name for the real Agrobank padi loan
+  max_amount: 2000            # tuning
+  season_rate: 0.02           # ~2% after the 2026 discount, https://www.bernama.com/bm/news.php?id=2555042
+  repay_from_harvest: true
+  manual_repay: true          # pay part or all of it early in the Agribank app
+  rate_applies_to: balance_at_harvest
+  unpaid_rolls_over: true     # cozy: no game over
+
+fishing:
+  spots:
+    longkang: { method: pancing, fish: [haruan, puyu, sepat, tilapia], catches_per_day: 3 }
+    plot_drained: { method: serkap, fish: [keli, haruan], catches_per_day: 2,
+                    available_when: [before_bajak, masak, sedia_tuai, after_harvest] }
+  # Minigame: green zone width as a share of the bar. Prices are tuning.
+  fish:
+    keli:    { zone: 0.18, price: 9 }
+    haruan:  { zone: 0.14, price: 12 }
+    puyu:    { zone: 0.26, price: 3 }
+    sepat:   { zone: 0.30, price: 2 }
+    tilapia: { zone: 0.22, price: 5 }
+  source: https://www.kosmo.com.my/?p=34756
+
+live:                          # side income, opens on day 8 of season 1. All numbers are tuning.
+  unlock: { season: 1, day: 8 }  # story card from KL friends
+  hours: 1
+  per_day: 1
+  base_coins: 10
+  coins_per_10_followers: 1
+  max_coins: 60
+  followers_per_live: 8
+  # Content bonuses come from what the player did TODAY, so Live rewards hand work and fishing.
+  bonus_followers:
+    farm_job: 6                # did at least one farm job today
+    fish: 4                    # caught at least one fish
+    harvest: 10                # harvested a plot
+  followers_keep_between_seasons: true
+
+hantu_raya:                      # companion; unlocks in the Kitab, follows the player
+  unlock: { season: 1, day: 14 }  # arrives with a one-off scene, not a night card
+  guards_cards: [tikus_malam]     # adds a free "suruh Raya jaga" option
+  ghost_chance: 0.2               # 1 in 5: he was busy streaming, the card's "biar" effect applies
+  idle_line_every_minutes: 2      # real minutes, while walking
+
+plots_by_season:                 # Tok Wan hands over one more plot each Musim Baru
+  - { season: 1, plots: [1] }
+  - { season: 2, plots: [1, 2] }
+  - { season: 3, plots: [1, 2, 3, 4] }   # and every season after
+
+events:
+  first_card_night: 2
+  card_night_every: [2, 3]     # tuning: random between
+  cards_per_draw: 3
+  max_bala_in_a_row: 1
+

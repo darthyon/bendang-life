@@ -1,0 +1,39 @@
+# Daily task templates. src/sim/tasks.ts builds "Tugas Hari Ini" each morning from these.
+# A task appears when its condition holds for an unlocked plot; it completes when the action or state is reached.
+# Text: tasks.<id> in i18n, with {n} = plot number and other placeholders as listed.
+
+- id: beli_benih
+  when: { seed_bags: 0, any_plot_status: [empty, ploughed] }
+  done_when: { seed_bags_at_least: 1 }
+
+- id: bajak
+  when: { plot_status: empty, day_at_most: 1 }
+  done_when: { plot_status: ploughed }
+
+- id: tanam
+  when: { plot_status: ploughed }
+  done_when: { plot_status: planted }
+
+- id: naik_air          # placeholders: {min} {max}
+  when: { plot_status: planted, water_below_target: true }
+  done_when: { water_in_target: true }
+
+- id: baja              # placeholder: {stage}
+  when: { plot_status: planted, fertiliser_stage_due: true }
+  done_when: { fertiliser_stage_done: true }
+
+- id: siput
+  when: { plot_status: planted, snails_at_least: 1 }
+  done_when: { snails: 0 }
+
+- id: rumpai
+  when: { plot_status: planted, weeds_at_least: 1 }
+  done_when: { weeds: 0 }
+
+- id: kering
+  when: { plot_status: planted, stage: masak, water_above_target: true }
+  done_when: { water_in_target: true }
+
+- id: tuai
+  when: { plot_status: planted, stage: sedia_tuai }
+  done_when: { plot_status: harvested }

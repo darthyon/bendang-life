@@ -1,0 +1,85 @@
+# on_buy_seed also fires when the player picks Tok Wan's starter seed.
+# Kitab Bendang facts. Text lives in i18n under facts.<id>. Keep every source URL.
+# rc = Rice Check item number from https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_water_depth
+  rc: [33, 34, 35, 36]
+  unlock: { on_action: pintu_air, first_time: true }
+  source: https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_drain_before_harvest
+  rc: [37, 45]
+  unlock: { on_day: 17 }
+  source: https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_harvest_85
+  rc: [46]
+  unlock: { on_action: tuai, first_time: true }
+  source: https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_four_fertiliser
+  rc: [26, 27, 28, 29]
+  unlock: { on_action: baja, first_time: true }
+  source: https://bernama.com/en/region/news.php?id=2592230
+
+- id: fact_seed_soak
+  rc: [21, 23]
+  unlock: { on_action: tanam, first_time: true }
+  source: https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_plough_timing
+  rc: [15, 16, 17]
+  unlock: { on_action: bajak, first_time: true }
+  source: https://doi.org/10.1186/s40066-025-00524-5
+
+- id: fact_snail_first_month
+  unlock: { on_action: siput, first_time: true }
+  source: https://www.sinarharian.com.my/ampArticle/31774
+
+- id: fact_weed_window
+  unlock: { on_action: rumpai, first_time: true }
+  source: https://journals.utm.my/jurnalteknologi/article/download/3529/2658/9478
+
+- id: fact_floor_price
+  unlock: { on_report: true }
+  source: https://www.kosmo.com.my/?p=724167
+
+- id: fact_cost_per_hectare
+  unlock: { on_report: true }
+  source: https://www.bharian.com.my/amp/berita/nasional/2026/05/1543195/bhplus
+
+- id: fact_tikus_bukan_bencana
+  unlock: { on_event: tikus_malam }
+  source: https://www.bharian.com.my/amp/berita/wilayah/2024/01/1203048/bhplus
+
+- id: fact_mr297
+  unlock: { on_buy_seed: mr297 }
+  source: https://www.sinarharian.com.my/article/660197/edisi/utara/mada-jamin-bekalan-benih-padi-cukup
+
+- id: fact_cl2_blast
+  unlock: { on_buy_seed: mr220cl2 }
+  source: https://pardocs.sinarproject.org/documents/2015-mar-apr/oral-questions/2015-04-01-parliamentary-replies/soalan-61.pdf
+
+- id: fact_mrq76
+  unlock: { on_buy_seed: mrq76 }
+  source: https://journals.utm.my/jurnalteknologi/article/download/3539/2668/9498
+
+- id: fact_fish_in_bendang
+  unlock: { on_action: serkap, first_time: true }
+  source: https://www.kosmo.com.my/?p=34756
+
+- id: fact_agribank_loan
+  unlock: { on_loan: true }
+  source: https://www.bernama.com/bm/news.php?id=2555042
+
+- id: fact_hand_vs_machine
+  unlock: { on_action: tuai }
+  source: https://www.bharian.com.my/amp/berita/nasional/2026/05/1543195/bhplus
+
+- id: fact_padi_angin
+  unlock: { on_event: padi_angin }
+  source: https://consumer.org.my/threat-of-weedy-rice-in-mada-area/
+
+- id: fact_phone_rice
+  unlock: { on_event_option: rendam_beras }
+  source: https://npr.org/2024/02/28/1234412452/what-should-you-do-if-your-phone-gets-wet-dont-put-it-a-bag-of-rice

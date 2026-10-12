@@ -1,0 +1,32 @@
+# Seed varieties sold in the Kedai Tani phone app. Yields are per plot (1 plot ~ 1 relong ~ 0.29 ha).
+# base_yield_kg and prices are tuning, anchored to ~6 t/ha for a good Muda season.
+
+- id: mr297
+  name_key: variety.mr297.name
+  price: 150
+  base_yield_kg: 1700
+  price_multiplier: 1.0
+  weed_spawn_multiplier: 1.0
+  harvest_window_days: 2
+  fact_id: fact_mr297
+  source: https://www.sinarharian.com.my/article/660197/edisi/utara/mada-jamin-bekalan-benih-padi-cukup
+
+- id: mr220cl2
+  name_key: variety.mr220cl2.name
+  price: 220
+  base_yield_kg: 1600
+  price_multiplier: 1.0
+  weed_spawn_multiplier: 0.4
+  harvest_window_days: 2
+  fact_id: fact_cl2_blast
+  source: https://pardocs.sinarproject.org/documents/2015-mar-apr/oral-questions/2015-04-01-parliamentary-replies/soalan-61.pdf
+
+- id: mrq76
+  name_key: variety.mrq76.name
+  price: 160
+  base_yield_kg: 1300
+  price_multiplier: 1.4
+  weed_spawn_multiplier: 1.0
+  harvest_window_days: 1
+  fact_id: fact_mrq76
+  source: https://journals.utm.my/jurnalteknologi/article/download/3539/2668/9498
