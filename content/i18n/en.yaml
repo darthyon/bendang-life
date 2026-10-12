@@ -332,6 +332,18 @@ fishing:
   tilapia: "Tilapia"
 
 report:
+  good_baja: "All four fertiliser stages on time."
+  good_drained: "Drained before harvest."
+  good_timing: "Harvested at the right time."
+  good_water: "Water stayed in the target every night."
+  missed_baja: "Missed {n} fertiliser stage(s)."
+  not_drained: "Harvested with water still in the plot (+15% potongan)."
+  late: "Harvested late (+10% potongan)."
+  early: "Harvested before the grain was ripe."
+  water_days: "Water outside the target on {n} night(s)."
+  plot_lost: "{n} plot(s) never harvested."
+  nothing_yet: "Nothing to note."
+  kg_unit: "{kg} kg"
   title: "Season Report"
   yield: "Yield: {kg} kg"
   grade: "Grade"

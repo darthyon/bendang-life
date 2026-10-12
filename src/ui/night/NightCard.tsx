@@ -48,14 +48,14 @@ export function NightCard() {
   return (
     <article className={`card card--${card.kind}`} aria-labelledby="card-title">
       <header className="card__head">
-        <span className="card__kind">{t(bala ? 'night.bala' : 'night.rezeki')}</span>
         <h2 id="card-title" className="card__title">
           {t(`events.${card.id}.title`)}
         </h2>
         <p className="card__real">{t(`events.${card.id}.real`)}</p>
       </header>
-      <div className="card__art" aria-hidden="true">
+      <div className="card__art">
         <Art size={64} />
+        <span className="card__kind">{t(bala ? 'night.bala' : 'night.rezeki')}</span>
       </div>
       <p className="card__body">{t(`events.${card.id}.body`)}</p>
       <p className="card__ask">{t(bala ? 'night.bala_body' : 'night.rezeki_body')}</p>

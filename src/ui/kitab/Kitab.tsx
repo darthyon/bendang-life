@@ -10,10 +10,14 @@ type Tab = 'notes' | 'unlocks'
 /** Tok Wan's notebook (spec §4.10). Opens over the screen and pauses the game. */
 export function Kitab() {
   const open = useGame((s) => s.ui.kitabOpen)
+  // Mounted only while open, so it always opens on Nota.
+  return open ? <Book /> : null
+}
+
+function Book() {
   const setKitab = useGame((s) => s.setKitab)
   const game = useGame((s) => s.game)
   const [tab, setTab] = useState<Tab>('notes')
-  if (!open) return null
 
   // Newest first, so a fresh unlock is at the top.
   const notes = [...game.facts]

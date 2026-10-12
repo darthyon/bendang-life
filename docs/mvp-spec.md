@@ -71,6 +71,7 @@ WASD or arrows (joystick on a phone) to move. When you stand at something you ca
 - The clock stops while the phone, the Kitab, a night card or a menu is open.
 - **Tidur** (Z, or the moon button) ends the day from anywhere. At 7 PM the day ends by itself.
 - Night is a short scene. On card nights, a night card appears first.
+- The night ends with a short recap of the day: water before and after (and the gate), health lost and why, new weeds or snails, money in and out today, and what's due tomorrow. Then the next morning starts.
 - One season is 20 days. They stand for a real season of about 110 days.
 
 ### 4.3 Farm jobs

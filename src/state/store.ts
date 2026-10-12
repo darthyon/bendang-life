@@ -3,7 +3,7 @@ import { applyAction, canApply, type ReasonKey } from '../sim/actions'
 import { advanceDay } from '../sim/day'
 import { canResolve, resolveCard, startNight } from '../sim/events'
 import { buildRecap, type Recap } from '../sim/recap'
-import { finishSeason, isSeasonOver } from '../sim/season'
+import { finishSeason, isSeasonOver, leaveForKl, newSeason } from '../sim/season'
 import { createRng } from '../sim/rng'
 import { createInitialState } from '../sim/state'
 import type { Action, GameState } from '../sim/types'
@@ -43,6 +43,9 @@ interface GameStore {
   chooseCard: (optionId: string) => ReasonKey | null
   /** Close the recap and start the next morning. */
   wake: () => void
+  /** After the report: Musim Baru, or Balik KL. */
+  stay: () => void
+  leave: () => void
   setPhone: (open: boolean) => void
   setKitab: (open: boolean) => void
   setPlotPanel: (plotId: number | null) => void
@@ -128,6 +131,16 @@ export const useGame = create<GameStore>((set, get) => {
       const { game } = get()
       if (isSeasonOver(game)) commit(finishSeason(game))
       set((st) => ({ ui: { ...st.ui, night: null, morning: st.ui.morning + 1 } }))
+    },
+    stay: () => {
+      const { game } = get()
+      if (game.phase !== 'report') return
+      commit(newSeason(game))
+      set((st) => ({ ui: { ...st.ui, morning: st.ui.morning + 1 } }))
+    },
+    leave: () => {
+      const { game } = get()
+      if (game.phase === 'report') commit(leaveForKl(game))
     },
     setPhone: (open) => set((s) => ({ ui: { ...s.ui, phoneOpen: open, kitabOpen: false } })),
     setKitab: (open) => set((s) => ({ ui: { ...s.ui, kitabOpen: open, phoneOpen: false } })),

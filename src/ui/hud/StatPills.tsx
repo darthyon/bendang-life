@@ -1,5 +1,6 @@
 import { t } from '../../i18n'
 import { weekOf, weekdayOf } from '../../sim/calendar'
+import { RULES } from '../../sim/rules'
 import { useGame } from '../../state/store'
 import { formatClock, formatRm } from '../format'
 import { CalendarIcon, CoinIcon, SackIcon, SeedlingIcon } from '../icons'
@@ -7,6 +8,10 @@ import { CalendarIcon, CoinIcon, SackIcon, SeedlingIcon } from '../icons'
 /** Top-right: coins, benih, baja, then the day and time (spec §7). Fish arrives in M5. */
 export function StatPills() {
   const game = useGame((s) => s.game)
+  const night = useGame((s) => s.ui.night)
+  // During the night scene the clock shows the evening that just ended, not the coming morning.
+  const day = night?.step === 'recap' ? night.recap.day : game.day
+  const hour = night ? RULES.clock.nightStartHour : game.hour
   const benih = Object.values(game.benih).reduce((a, b) => a + b, 0)
 
   return (
@@ -29,9 +34,9 @@ export function StatPills() {
       <div className="panel pill pill--clock">
         <CalendarIcon className="pill__icon pill__icon--sun" size={24} />
         <span className="pill__lines">
-          <span>{t('hud.week_day', { w: weekOf(game.day), d: game.day })}</span>
+          <span>{t('hud.week_day', { w: weekOf(day), d: day })}</span>
           <span className="pill__sub">
-            {t(`hud.weekday_${weekdayOf(game.day)}`)}, <time>{formatClock(game.hour)}</time>
+            {t(`hud.weekday_${weekdayOf(day)}`)}, <time>{formatClock(hour)}</time>
           </span>
         </span>
       </div>

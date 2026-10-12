@@ -20,4 +20,6 @@ export const PALETTE = {
   shirt: '#4c6a8a',
   skin: '#d9a97c',
   hat: '#e2c27a',
+  tokShirt: '#e8e2d2',
+  songkok: '#1f1f24',
 } as const

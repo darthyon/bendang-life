@@ -13,6 +13,7 @@ import { Player } from './Player'
 import { Plot } from './Plot'
 import { ProblemIcons } from './ProblemIcons'
 import { Prompt } from './Prompt'
+import { TokWan } from './TokWan'
 import { Cottage } from './Props/Cottage'
 import { Gate } from './Props/Gate'
 import { Longkang } from './Props/Longkang'
@@ -29,7 +30,11 @@ export function World() {
   const game = useGame((s) => s.game)
   const setPlotPanel = useGame((s) => s.setPlotPanel)
   const night = useGame((s) => s.ui.night !== null)
-  const job = target ? primaryJob(game, target) : null
+  // World-space labels hide while anything pauses the game (overlays sit above them).
+  const paused = useGame(
+    (s) => s.ui.phoneOpen || s.ui.kitabOpen || s.ui.night !== null || s.game.phase !== 'playing',
+  )
+  const job = target && !paused ? primaryJob(game, target) : null
 
   useEffect(() => {
     let timer: number | undefined
@@ -78,7 +83,8 @@ export function World() {
       ))}
       <Longkang />
       <Cottage />
-      <ProblemIcons />
+      <TokWan />
+      {!paused && <ProblemIcons />}
       <Player position={player} />
       <Prompt job={job} blocked={blocked} focus={player} />
     </>

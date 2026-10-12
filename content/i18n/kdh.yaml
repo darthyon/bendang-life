@@ -337,6 +337,18 @@ fishing:
   tilapia: "Tilapia"
 
 report:
+  good_baja: "Empat peringkat baja, semua on time."  # TODO proofread
+  good_drained: "Keringkan petak sebelum tuai."  # TODO proofread
+  good_timing: "Tuai tepat masa."  # TODO proofread
+  good_water: "Ayaq elok tiap malam."  # TODO proofread
+  missed_baja: "Terlepas {n} peringkat baja."  # TODO proofread
+  not_drained: "Tuai masa ayaq ada lagi dalam petak (+15% potongan)."  # TODO proofread
+  late: "Tuai lambat (+10% potongan)."  # TODO proofread
+  early: "Tuai sebelum padi masak."  # TODO proofread
+  water_days: "Ayaq tak kena {n} malam."  # TODO proofread
+  plot_lost: "{n} petak tak sempat tuai."  # TODO proofread
+  nothing_yet: "Takdak apa nak cakap."  # TODO proofread
+  kg_unit: "{kg} kg"  # TODO proofread
   title: "Laporan Musim"
   yield: "Hasil: {kg} kg"
   grade: "Gred"

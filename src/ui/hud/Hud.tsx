@@ -2,6 +2,8 @@ import { Kitab } from '../kitab/Kitab'
 import { NightScene } from '../night/NightScene'
 import { PlotPanel } from '../panels/PlotPanel'
 import { Phone } from '../phone/Phone'
+import { Ending } from '../season/Ending'
+import { SeasonReport } from '../season/SeasonReport'
 import { LeftRail } from './LeftRail'
 import { PlayerCard } from './PlayerCard'
 import { StatPills } from './StatPills'
@@ -24,6 +26,8 @@ export function Hud() {
       <Phone />
       <Kitab />
       <NightScene />
+      <SeasonReport />
+      <Ending />
       <WakeFade />
     </div>
   )
