@@ -4,6 +4,7 @@ import { PCFShadowMap } from 'three'
 import { attachControls } from './input/controls'
 import { World } from './scene/World'
 import { startClock } from './state/clock'
+import { Hud } from './ui/hud/Hud'
 import './styles.css'
 
 // Dev-only tools. `import.meta.env.DEV` is false in production, so these chunks are never built.
@@ -34,6 +35,7 @@ export function App() {
           </Suspense>
         )}
       </Canvas>
+      <Hud />
       {DebugPanel && (
         <Suspense fallback={null}>
           <DebugPanel />

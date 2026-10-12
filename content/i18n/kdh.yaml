@@ -72,6 +72,9 @@ tutorial:
   phone: "Tekan F nak bukak fon. Masa berhenti bila fon bukak."  # TODO proofread
 
 hud:
+  player_placeholder: "Anak Muda"  # TODO proofread
+  am: "AM"  # TODO proofread
+  pm: "PM"  # TODO proofread
   coins: "Duit"
   seed_bags: "Guni benih"
   fert_bags: "Guni baja"

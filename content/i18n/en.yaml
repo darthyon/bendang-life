@@ -67,6 +67,9 @@ tutorial:
   phone: "Press F to open your phone. Time stops while it's open."
 
 hud:
+  player_placeholder: "Young farmer"
+  am: "AM"
+  pm: "PM"
   coins: "Coins"
   seed_bags: "Seed bags"
   fert_bags: "Fertiliser bags"
