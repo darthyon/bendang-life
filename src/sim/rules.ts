@@ -96,7 +96,7 @@ export interface Rules {
     followersPerLive: number
     bonusFollowers: { farmJob: number; fish: number; harvest: number }
   }
-  raya: { ghostChance: number }
+  raya: { ghostChance: number; idleLineMinutes: number }
   unlocks: {
     live: { season: number; day: number }
     raya: { season: number; day: number }
@@ -325,6 +325,14 @@ function parseRules(raw: unknown): Rules {
       ghostChance: num(
         at(obj(at(r, 'hantu_raya', 'rules'), 'hantu_raya'), 'ghost_chance', 'hantu_raya'),
         'hantu_raya.ghost_chance',
+      ),
+      idleLineMinutes: num(
+        at(
+          obj(at(r, 'hantu_raya', 'rules'), 'hantu_raya'),
+          'idle_line_every_minutes',
+          'hantu_raya',
+        ),
+        'hantu_raya.idle_line_every_minutes',
       ),
     },
     unlocks: {

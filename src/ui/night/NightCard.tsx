@@ -1,6 +1,6 @@
 import { useState, type ComponentType } from 'react'
 import { t } from '../../i18n'
-import { DECLINE, findCard } from '../../sim/events'
+import { cardOptions, DECLINE, findCard, RAYA_GUARD } from '../../sim/events'
 import { useGame } from '../../state/store'
 import {
   BookIcon,
@@ -34,6 +34,7 @@ const ART: Record<string, ComponentType<{ size?: number }>> = {
 export function NightCard() {
   const cardId = useGame((s) => s.game.pendingCard)
   const choose = useGame((s) => s.chooseCard)
+  const game = useGame((s) => s.game)
   const [refused, setRefused] = useState<{ option: string; reason: string } | null>(null)
   const card = findCard(cardId)
   if (!card) return null
@@ -60,7 +61,7 @@ export function NightCard() {
       <p className="card__body">{t(`events.${card.id}.body`)}</p>
       <p className="card__ask">{t(bala ? 'night.bala_body' : 'night.rezeki_body')}</p>
       <div className="card__options">
-        {card.options.map((option) => {
+        {cardOptions(game, card).map((option) => {
           const costs = describeCost(option)
           const effects = option.effects.flatMap(describeEffect)
           return (
@@ -70,7 +71,9 @@ export function NightCard() {
               className="card__option"
               onClick={() => pick(option.id)}
             >
-              <span className="card__option-name">{t(`events.${card.id}.${option.id}`)}</span>
+              <span className="card__option-name">
+                {option.id === RAYA_GUARD ? t('raya.guard') : t(`events.${card.id}.${option.id}`)}
+              </span>
               <span className="card__option-meta">
                 {costs.length === 0 && (
                   <span className="tag tag--free">{t('night.cost_free')}</span>

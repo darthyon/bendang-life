@@ -89,7 +89,7 @@ export const useGame = create<GameStore>((set, get) => {
   let evening: GameState | null = null
 
   /** Run the night: advance to the next morning and show the recap. */
-  const endNight = (card: { id: string; optionId: string } | null = null) => {
+  const endNight = (card: Recap['card'] = null) => {
     const before = get().game
     const rng = rngNow()
     const after = advanceDay(before, rng)
@@ -142,8 +142,9 @@ export const useGame = create<GameStore>((set, get) => {
       if (reason !== null) return reason
       const rng = rngNow()
       const cardId = game.pendingCard
-      commit(resolveCard(game, optionId, rng), rng.state())
-      endNight(cardId ? { id: cardId, optionId } : null)
+      const resolved = resolveCard(game, optionId, rng)
+      commit(resolved, rng.state())
+      endNight(cardId ? { id: cardId, optionId, outcome: resolved.lastCardOutcome } : null)
       return null
     },
     wake: () => {
@@ -207,6 +208,7 @@ export function isPaused(): boolean {
     ui.phoneOpen ||
     ui.kitabOpen ||
     ui.fishing !== null ||
+    (game.moments.length > 0 && ui.night === null) ||
     ui.night !== null ||
     game.phase !== 'playing'
   )

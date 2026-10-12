@@ -22,4 +22,7 @@ export const PALETTE = {
   hat: '#e2c27a',
   tokShirt: '#e8e2d2',
   songkok: '#1f1f24',
+  rayaHoodie: '#8f9fd8',
+  rayaFace: '#dfe6ff',
+  rayaPhone: '#9fe0ff',
 } as const

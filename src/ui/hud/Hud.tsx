@@ -4,6 +4,7 @@ import { NightScene } from '../night/NightScene'
 import { PlotPanel } from '../panels/PlotPanel'
 import { Phone } from '../phone/Phone'
 import { Ending } from '../season/Ending'
+import { MomentCard } from '../story/MomentCard'
 import { SeasonReport } from '../season/SeasonReport'
 import { LeftRail } from './LeftRail'
 import { PlayerCard } from './PlayerCard'
@@ -28,6 +29,7 @@ export function Hud() {
       <Kitab />
       <Fishing />
       <NightScene />
+      <MomentCard />
       <SeasonReport />
       <Ending />
       <WakeFade />

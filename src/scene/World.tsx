@@ -13,6 +13,7 @@ import { Player } from './Player'
 import { Plot } from './Plot'
 import { ProblemIcons } from './ProblemIcons'
 import { Prompt } from './Prompt'
+import { Raya } from './Raya'
 import { TokWan } from './TokWan'
 import { Cottage } from './Props/Cottage'
 import { Gate } from './Props/Gate'
@@ -33,7 +34,13 @@ export function World() {
   const night = useGame((s) => s.ui.night !== null)
   // World-space labels hide while anything pauses the game (overlays sit above them).
   const paused = useGame(
-    (s) => s.ui.phoneOpen || s.ui.kitabOpen || s.ui.night !== null || s.game.phase !== 'playing',
+    (s) =>
+      s.ui.phoneOpen ||
+      s.ui.kitabOpen ||
+      s.ui.fishing !== null ||
+      s.ui.night !== null ||
+      s.game.moments.length > 0 ||
+      s.game.phase !== 'playing',
   )
   const job = target && !paused ? primaryJob(game, target) : null
   const second = target && !paused ? serkapJob(game, target) : null
@@ -91,6 +98,7 @@ export function World() {
       <TokWan />
       {!paused && <ProblemIcons />}
       <Player position={player} />
+      <Raya player={player} />
       <Prompt job={job} second={second} blocked={blocked} focus={player} />
     </>
   )

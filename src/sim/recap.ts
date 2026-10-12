@@ -21,8 +21,8 @@ export interface RecapPlot {
 
 export interface Recap {
   day: number
-  /** Tonight's card and the option taken, if there was a card. */
-  card: { id: string; optionId: string } | null
+  /** Tonight's card, the option taken and how Raya's watch went (if he was asked). */
+  card: { id: string; optionId: string; outcome: 'guard_ok' | 'ghosted' | null } | null
   plots: RecapPlot[]
   money: { earned: number; spent: number }
   /** What is due tomorrow: the new morning's open tasks. */

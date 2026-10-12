@@ -61,9 +61,10 @@ describe('day recap', () => {
     const recap = buildRecap(evening, advanceDay(resolved, createRng(1)), {
       id: 'hujan_lebat',
       optionId: 'biar',
+      outcome: null,
     })
     expect(recap.plots[0]).toMatchObject({ waterFrom: 5, waterTo: 8 })
-    expect(recap.card).toEqual({ id: 'hujan_lebat', optionId: 'biar' })
+    expect(recap.card).toEqual({ id: 'hujan_lebat', optionId: 'biar', outcome: null })
   })
 
   it('sums money in and out today', () => {

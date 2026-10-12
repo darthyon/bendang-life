@@ -1,5 +1,5 @@
 import { t } from '../../i18n'
-import { DECLINE } from '../../sim/events'
+import { DECLINE, RAYA_GUARD } from '../../sim/events'
 import type { Recap as RecapData } from '../../sim/recap'
 import { useGame } from '../../state/store'
 import { formatRm } from '../format'
@@ -24,8 +24,15 @@ export function Recap({ recap }: { recap: RecapData }) {
             choice:
               recap.card.optionId === DECLINE
                 ? t('night.decline_all')
-                : t(`events.${recap.card.id}.${recap.card.optionId}`),
+                : recap.card.optionId === RAYA_GUARD
+                  ? t('raya.guard')
+                  : t(`events.${recap.card.id}.${recap.card.optionId}`),
           })}
+          {recap.card.outcome && (
+            <span className="recap__raya">
+              {t(recap.card.outcome === 'ghosted' ? 'raya.ghosted' : 'raya.guard_ok')}
+            </span>
+          )}
         </p>
       )}
 
