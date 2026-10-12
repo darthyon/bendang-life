@@ -45,5 +45,11 @@ export function createInitialState({ starter, season = 1 }: NewGameOptions): Gam
     loan: { balance: 0, interestCharged: false },
     harvests: [],
     tasksToday: [],
+    pendingCard: null,
+    cards: { nextNight: RULES.events.firstCardNight, lastKind: null },
+    effects: [],
+    phoneOffDays: 0,
+    hoursLostTomorrow: 0,
+    facts: [],
   })
 }

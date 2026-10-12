@@ -2,7 +2,7 @@ import { waterTarget } from './calendar'
 import type { Rng } from './rng'
 import { RULES, VARIETIES } from './rules'
 import { refreshTasks } from './tasks'
-import type { GameState, GateId, Plot } from './types'
+import type { GameState, GateId, Plot, TimedEffect } from './types'
 
 function inWindow(day: number, w: { fromDay: number; toDay: number }): boolean {
   return day >= w.fromDay && day <= w.toDay
@@ -67,22 +67,41 @@ function spawnPests(plot: Plot, day: number, rng: Rng): Pick<Plot, 'weeds' | 'sn
   }
 }
 
+function sumEffects(state: GameState, kind: TimedEffect['kind']): number {
+  return state.effects.filter((e) => e.kind === kind).reduce((a, e) => a + e.value, 0)
+}
+
 /** End the current day (Tidur or 7 PM) and start the next morning. */
 export function advanceDay(state: GameState, rng: Rng): GameState {
   const nextDay = state.day + 1
+  const waterDelta = sumEffects(state, 'water')
+  const healthDelta = sumEffects(state, 'health')
   const plots = state.plots.map((plot) => {
+    const planted = plot.status === 'planted'
+    let water = overnightWater(plot, state.gates)
+    if (planted) water = Math.min(RULES.water.capCm, Math.max(0, water + waterDelta))
+    const health = endOfDayHealth(plot, state.day) + (planted ? healthDelta : 0)
     const ended: Plot = {
       ...plot,
-      health: endOfDayHealth(plot, state.day),
-      waterCm: overnightWater(plot, state.gates),
+      health: Math.min(RULES.health.max, Math.max(0, health)),
+      waterCm: water,
     }
     return { ...ended, ...spawnPests(ended, nextDay, rng) }
   })
+  // Hours lost tomorrow: one-off card costs plus any multi-day ones.
+  const lateBy = state.hoursLostTomorrow + sumEffects(state, 'hours')
+  const hour = Math.min(RULES.clock.nightStartHour, RULES.clock.dayStartHour + lateBy)
+  const effects = state.effects
+    .map((e) => ({ ...e, daysLeft: e.daysLeft - 1 }))
+    .filter((e) => e.daysLeft > 0)
   return refreshTasks({
     ...state,
     day: nextDay,
-    hour: RULES.clock.dayStartHour,
+    hour,
     plots,
+    effects,
+    hoursLostTomorrow: 0,
+    phoneOffDays: Math.max(0, state.phoneOffDays - 1),
     tasksToday: [],
   })
 }

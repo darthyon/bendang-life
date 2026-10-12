@@ -45,6 +45,16 @@ export interface TaskRef {
   done: boolean
 }
 
+export type CardKind = 'bala' | 'rezeki'
+
+/** A card effect that lasts several days (night cards, spec §4.7). */
+export interface TimedEffect {
+  kind: 'water' | 'health' | 'hours'
+  /** cm per night, health per night, or hours lost each morning. */
+  value: number
+  daysLeft: number
+}
+
 export interface GameState {
   season: number
   day: number
@@ -59,6 +69,16 @@ export interface GameState {
   harvests: HarvestResult[]
   /** Tugas Hari Ini: built each morning, extended as new jobs become due. */
   tasksToday: TaskRef[]
+  /** Tonight's night card, waiting for the player's choice. */
+  pendingCard: string | null
+  cards: { nextNight: number; lastKind: CardKind | null }
+  effects: TimedEffect[]
+  /** Days left without a phone (Fon Jatuh Dalam Bendang). */
+  phoneOffDays: number
+  /** Hours tomorrow starts late because of a card choice. */
+  hoursLostTomorrow: number
+  /** Kitab facts unlocked, in unlock order. */
+  facts: string[]
 }
 
 export type Action =

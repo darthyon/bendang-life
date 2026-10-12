@@ -79,6 +79,11 @@ export interface Rules {
   }
   loan: { maxAmount: number; seasonRate: number }
   plotsBySeason: { season: number; plots: number[] }[]
+  events: {
+    firstCardNight: number
+    cardNightEvery: [number, number]
+    maxBalaInARow: number
+  }
 }
 
 export interface Variety {
@@ -111,6 +116,10 @@ function parseRules(raw: unknown): Rules {
   const economy = obj(at(r, 'economy', 'rules'), 'economy')
   const prices = obj(at(economy, 'prices', 'economy'), 'economy.prices')
   const loan = obj(at(r, 'loan', 'rules'), 'loan')
+  const events = obj(at(r, 'events', 'rules'), 'events')
+  const every = arr(at(events, 'card_night_every', 'events'), 'events.card_night_every').map(
+    (n, i) => num(n, `events.card_night_every[${i}]`),
+  )
 
   const idealDays = arr(at(harvest, 'ideal_days', 'harvest'), 'harvest.ideal_days').map((d, i) =>
     num(d, `harvest.ideal_days[${i}]`),
@@ -211,6 +220,14 @@ function parseRules(raw: unknown): Rules {
     loan: {
       maxAmount: num(at(loan, 'max_amount', 'loan'), 'loan.max_amount'),
       seasonRate: num(at(loan, 'season_rate', 'loan'), 'loan.season_rate'),
+    },
+    events: {
+      firstCardNight: num(at(events, 'first_card_night', 'events'), 'events.first_card_night'),
+      cardNightEvery: [
+        num(every[0], 'events.card_night_every[0]'),
+        num(every[1], 'events.card_night_every[1]'),
+      ],
+      maxBalaInARow: num(at(events, 'max_bala_in_a_row', 'events'), 'events.max_bala_in_a_row'),
     },
     plotsBySeason: arr(at(r, 'plots_by_season', 'rules'), 'plots_by_season').map((e, i) => {
       const p = `plots_by_season[${i}]`
