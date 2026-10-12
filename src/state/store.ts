@@ -82,8 +82,8 @@ interface GameStore {
   beginGame: (starter: VarietyId) => void
   /** Load the autosave. Returns false when there is none or it can't be read. */
   continueGame: () => boolean
-  /** Save now (start of day, before leaving to the start screen). */
-  saveNow: () => void
+  /** Save now (start of day, before leaving to the start screen). `quiet` skips the toast. */
+  saveNow: (quiet?: boolean) => void
   deleteSave: () => void
   /** Replace the game state directly. Debug panel only. */
   debugSet: (next: GameState) => void
@@ -152,6 +152,8 @@ export const useGame = create<GameStore>((set, get) => {
       if (ORDERS.includes(action.type)) toast('phone.delivered')
       const harvest = next.harvests.length > game.harvests.length ? next.harvests.at(-1) : undefined
       if (harvest) toast('toasts.harvested', { kg: harvest.kg })
+      // One-off panels must stay dismissed after a reload.
+      if (action.type === 'ACK_TUTORIAL' || action.type === 'ACK_MOMENT') get().saveNow(true)
       return null
     },
     sleep: () => {
@@ -263,9 +265,9 @@ export const useGame = create<GameStore>((set, get) => {
       })
       return true
     },
-    saveNow: () => {
+    saveNow: (quiet = false) => {
       const { game, seed: s, rngState } = get()
-      if (writeSave({ state: game, seed: s, rngState })) get().toast('toasts.saved')
+      if (writeSave({ state: game, seed: s, rngState }) && !quiet) get().toast('toasts.saved')
     },
     deleteSave: () => {
       clearSave()

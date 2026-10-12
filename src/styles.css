@@ -2811,3 +2811,47 @@ button {
     animation: none;
   }
 }
+
+@media (max-height: 520px) {
+  /* Fit the controls panel without scrolling: below the pills, without the secondary lines. */
+  .tutorial {
+    top: calc(var(--edge) + 48px + var(--gap));
+    bottom: auto;
+    transform: none;
+    max-height: calc(100vh - var(--edge) * 2 - 48px - var(--gap));
+    gap: 6px;
+  }
+
+  .tutorial__body,
+  .tutorial__sub {
+    display: none;
+  }
+
+  .tutorial__title {
+    font-size: 18px;
+  }
+
+  .tutorial__list {
+    gap: 4px;
+    padding: 6px 0;
+  }
+
+  .tutorial__row {
+    grid-template-columns: 116px 1fr;
+    align-items: center;
+  }
+
+  .tutorial__line {
+    font-size: 13px;
+  }
+
+  .tutorial__task {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .tutorial .btn {
+    min-height: 38px;
+    padding: 6px 12px;
+  }
+}
