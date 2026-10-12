@@ -49,7 +49,7 @@ export interface Window {
 }
 
 export interface Rules {
-  season: { days: number }
+  season: { days: number; lastDay: number; verdictMargin: number }
   clock: { dayStartHour: number; nightStartHour: number; realSecondsPerGameHour: number }
   water: {
     capCm: number
@@ -153,7 +153,11 @@ function parseRules(raw: unknown): Rules {
     )
 
   return {
-    season: { days: num(at(season, 'days', 'season'), 'season.days') },
+    season: {
+      days: num(at(season, 'days', 'season'), 'season.days'),
+      lastDay: num(at(season, 'last_day', 'season'), 'season.last_day'),
+      verdictMargin: num(at(season, 'verdict_margin', 'season'), 'season.verdict_margin'),
+    },
     clock: {
       dayStartHour: num(at(clock, 'day_start_hour', 'clock'), 'clock.day_start_hour'),
       nightStartHour: num(at(clock, 'night_start_hour', 'clock'), 'clock.night_start_hour'),

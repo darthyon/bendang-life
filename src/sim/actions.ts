@@ -1,6 +1,7 @@
 import { bajaStageDue, harvestTiming } from './calendar'
 import { harvestPlot } from './harvest'
 import { RULES, VARIETIES } from './rules'
+import { unlockBy } from './facts'
 import { refreshTasks } from './tasks'
 import type { Action, GameState, JobId, Plot } from './types'
 
@@ -103,7 +104,25 @@ function updatePlot(state: GameState, plotId: number, patch: (p: Plot) => Partia
 export function applyAction(state: GameState, action: Action): GameState {
   if (canApply(state, action) !== null) return state
   const next = reduce(state, action)
-  return next === state ? state : refreshTasks(next)
+  return next === state ? state : refreshTasks(unlockFactsFor(next, action))
+}
+
+function unlockFactsFor(state: GameState, action: Action): GameState {
+  const job = JOB_OF[action.type]
+  if (job) return unlockBy(state, { on: 'action', job })
+  if (action.type === 'BUY_BENIH')
+    return unlockBy(state, { on: 'buy_seed', variety: action.variety })
+  if (action.type === 'LOAN_TAKE') return unlockBy(state, { on: 'loan' })
+  return state
+}
+
+function spend(state: GameState, rm: number, line: 'seedRm' | 'bajaRm'): GameState {
+  return {
+    ...state,
+    coins: state.coins - rm,
+    ledger: { ...state.ledger, [line]: state.ledger[line] + rm },
+    today: { ...state.today, spent: state.today.spent + rm },
+  }
 }
 
 function reduce(state: GameState, action: Action): GameState {
@@ -148,14 +167,14 @@ function reduce(state: GameState, action: Action): GameState {
       const plot = findPlot(s, action.plotId)
       return plot ? harvestPlot(s, plot) : state
     }
-    case 'BUY_BENIH':
-      return {
-        ...s,
-        coins: s.coins - VARIETIES[action.variety].price,
-        benih: { ...s.benih, [action.variety]: s.benih[action.variety] + 1 },
-      }
-    case 'BUY_BAJA':
-      return { ...s, coins: s.coins - RULES.economy.bajaBagPrice, baja: s.baja + 1 }
+    case 'BUY_BENIH': {
+      const paid = spend(s, VARIETIES[action.variety].price, 'seedRm')
+      return { ...paid, benih: { ...paid.benih, [action.variety]: paid.benih[action.variety] + 1 } }
+    }
+    case 'BUY_BAJA': {
+      const paid = spend(s, RULES.economy.bajaBagPrice, 'bajaRm')
+      return { ...paid, baja: paid.baja + 1 }
+    }
     case 'LOAN_TAKE':
       return {
         ...s,

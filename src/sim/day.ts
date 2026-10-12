@@ -1,6 +1,7 @@
 import { waterTarget } from './calendar'
 import type { Rng } from './rng'
 import { RULES, VARIETIES } from './rules'
+import { unlockBy } from './facts'
 import { refreshTasks } from './tasks'
 import type { GameState, GateId, Plot, TimedEffect } from './types'
 
@@ -81,10 +82,13 @@ export function advanceDay(state: GameState, rng: Rng): GameState {
     let water = overnightWater(plot, state.gates)
     if (planted) water = Math.min(RULES.water.capCm, Math.max(0, water + waterDelta))
     const health = endOfDayHealth(plot, state.day) + (planted ? healthDelta : 0)
+    const band = waterTarget(state.day)
+    const offBand = planted && (plot.waterCm < band.min || plot.waterCm > band.max)
     const ended: Plot = {
       ...plot,
       health: Math.min(RULES.health.max, Math.max(0, health)),
       waterCm: water,
+      daysOffWater: plot.daysOffWater + (offBand ? 1 : 0),
     }
     return { ...ended, ...spawnPests(ended, nextDay, rng) }
   })
@@ -94,14 +98,19 @@ export function advanceDay(state: GameState, rng: Rng): GameState {
   const effects = state.effects
     .map((e) => ({ ...e, daysLeft: e.daysLeft - 1 }))
     .filter((e) => e.daysLeft > 0)
-  return refreshTasks({
-    ...state,
-    day: nextDay,
-    hour,
-    plots,
-    effects,
-    hoursLostTomorrow: 0,
-    phoneOffDays: Math.max(0, state.phoneOffDays - 1),
-    tasksToday: [],
-  })
+  const morning = unlockBy(
+    {
+      ...state,
+      day: nextDay,
+      hour,
+      plots,
+      effects,
+      hoursLostTomorrow: 0,
+      phoneOffDays: Math.max(0, state.phoneOffDays - 1),
+      tasksToday: [],
+      today: { earned: 0, spent: 0 },
+    },
+    { on: 'day', day: nextDay },
+  )
+  return refreshTasks(morning)
 }

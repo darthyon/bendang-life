@@ -2,7 +2,7 @@
 import rawEvents from '../../content/events.yaml'
 import type { ReasonKey } from './actions'
 import { stageForDay } from './calendar'
-import { FACTS, unlockFact } from './facts'
+import { FACTS, unlockBy, unlockFact } from './facts'
 import type { Rng } from './rng'
 import { arr, at, num, obj, RULES, str } from './rules'
 import type { CardKind, GameState, Plot, Stage } from './types'
@@ -253,9 +253,12 @@ export function resolveCard(state: GameState, optionId: string, rng: Rng): GameS
   if (!option) return cleared
 
   const { cost } = option
+  const coins = cost.coins ?? 0
   let s: GameState = {
-    ...cleared,
-    coins: cleared.coins - (cost.coins ?? 0),
+    ...unlockBy(cleared, { on: 'event_option', id: option.id }),
+    coins: cleared.coins - coins,
+    ledger: { ...cleared.ledger, cardRm: cleared.ledger.cardRm + coins },
+    today: { ...cleared.today, spent: cleared.today.spent + coins },
     baja: cleared.baja - (cost.items?.baja_bag ?? 0),
     hoursLostTomorrow: cleared.hoursLostTomorrow + (cost.hoursTomorrow ?? 0),
   }

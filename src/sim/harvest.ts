@@ -61,7 +61,9 @@ export function harvestPlot(state: GameState, plot: Plot): GameState {
   balance -= loanRepaidRm
   const netToPlayerRm = proceeds - loanRepaidRm
 
+  const timing = harvestTiming(state.day, variety)
   const result: HarvestResult = {
+    season: state.season,
     plotId: plot.id,
     day: state.day,
     variety: variety.id,
@@ -73,12 +75,18 @@ export function harvestPlot(state: GameState, plot: Plot): GameState {
     loanInterestRm,
     loanRepaidRm,
     netToPlayerRm,
+    health: plot.health,
+    bajaMissed: plot.bajaDone.filter((done) => !done).length,
+    drained: plot.waterCm <= RULES.harvest.potongan.drainedMaxCm,
+    timing: timing === 'too_early' ? 'early' : timing,
   }
 
   return {
     ...state,
     coins: state.coins + netToPlayerRm,
     loan: { balance, interestCharged },
+    ledger: { ...state.ledger, interestRm: state.ledger.interestRm + loanInterestRm },
+    today: { ...state.today, earned: state.today.earned + proceeds },
     plots: state.plots.map((p) => (p.id === plot.id ? { ...p, status: 'harvested' } : p)),
     harvests: [...state.harvests, result],
   }

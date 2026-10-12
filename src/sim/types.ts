@@ -16,11 +16,14 @@ export interface Plot {
   snails: number
   /** One flag per baja stage: applied in its window. */
   bajaDone: boolean[]
-  /** Product of card effects on yield (night cards, M4). */
+  /** Product of card effects on yield (night cards). */
   yieldMultiplier: number
+  /** Nights this season the plot was planted and outside its water band. */
+  daysOffWater: number
 }
 
 export interface HarvestResult {
+  season: number
   plotId: number
   day: number
   variety: VarietyId
@@ -32,7 +35,21 @@ export interface HarvestResult {
   loanInterestRm: number
   loanRepaidRm: number
   netToPlayerRm: number
+  health: number
+  bajaMissed: number
+  drained: boolean
+  timing: 'early' | 'ideal' | 'late'
 }
+
+/** Season spending for the report (spec §4.10). Sales live in `harvests`. */
+export interface Ledger {
+  seedRm: number
+  bajaRm: number
+  cardRm: number
+  interestRm: number
+}
+
+export type Phase = 'playing' | 'report' | 'ended'
 
 export type TaskId =
   'beli_benih' | 'bajak' | 'tanam' | 'naik_air' | 'baja' | 'siput' | 'rumpai' | 'kering' | 'tuai'
@@ -79,6 +96,14 @@ export interface GameState {
   hoursLostTomorrow: number
   /** Kitab facts unlocked, in unlock order. */
   facts: string[]
+  /** How many facts were known when this season started (for "new facts" in the report). */
+  factsAtSeasonStart: number
+  ledger: Ledger
+  /** Money in and out today, for the night recap. */
+  today: { earned: number; spent: number }
+  phase: Phase
+  /** Set when the player goes back to KL. */
+  ending: { kg: number; facts: number } | null
 }
 
 export type Action =

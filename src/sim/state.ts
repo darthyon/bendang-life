@@ -1,4 +1,5 @@
 import { RULES, VARIETY_LIST } from './rules'
+import { unlockBy } from './facts'
 import { refreshTasks } from './tasks'
 import type { GameState, Plot, VarietyId } from './types'
 
@@ -20,8 +21,16 @@ function emptyPlot(id: number, open: boolean): Plot {
     snails: 0,
     bajaDone: RULES.fertiliser.stageDays.map(() => false),
     yieldMultiplier: 1,
+    daysOffWater: 0,
   }
 }
+
+export function emptyPlots(season: number): Plot[] {
+  const open = plotsOpenInSeason(season)
+  return PLOT_IDS.map((id) => emptyPlot(id, open.includes(id)))
+}
+
+export const EMPTY_LEDGER = { seedRm: 0, bajaRm: 0, cardRm: 0, interestRm: 0 }
 
 export interface NewGameOptions {
   /** Tok Wan's starter seed (picked in onboarding from M6). */
@@ -30,17 +39,16 @@ export interface NewGameOptions {
 }
 
 export function createInitialState({ starter, season = 1 }: NewGameOptions): GameState {
-  const open = plotsOpenInSeason(season)
   const benih = Object.fromEntries(VARIETY_LIST.map((v) => [v, 0])) as Record<VarietyId, number>
   benih[starter] = 1
-  return refreshTasks({
+  const state: GameState = {
     season,
     day: 1,
     hour: RULES.clock.dayStartHour,
     coins: RULES.economy.startCoins,
     benih,
     baja: 0,
-    plots: PLOT_IDS.map((id) => emptyPlot(id, open.includes(id))),
+    plots: emptyPlots(season),
     gates: { A: false, B: false },
     loan: { balance: 0, interestCharged: false },
     harvests: [],
@@ -51,5 +59,12 @@ export function createInitialState({ starter, season = 1 }: NewGameOptions): Gam
     phoneOffDays: 0,
     hoursLostTomorrow: 0,
     facts: [],
-  })
+    factsAtSeasonStart: 0,
+    ledger: EMPTY_LEDGER,
+    today: { earned: 0, spent: 0 },
+    phase: 'playing',
+    ending: null,
+  }
+  // The starter seed counts as a seed bought (facts.yaml).
+  return refreshTasks(unlockBy(state, { on: 'buy_seed', variety: starter }))
 }

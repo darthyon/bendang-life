@@ -3,6 +3,8 @@
 
 season:
   days: 20                       # tuning: stands for a ~110-day real season
+  last_day: 24                   # tuning: unharvested plots are lost after this day (approved in M4 plan)
+  verdict_margin: 100            # Tok Wan's verdict: untung above +RM100, rugi below -RM100 (spec §4.10)
 
 clock:
   pause_when: [phone_open, kitab_open, night_card, menu]
