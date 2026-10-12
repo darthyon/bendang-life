@@ -11,6 +11,7 @@ import { PlayerCard } from './PlayerCard'
 import { StatPills } from './StatPills'
 import { TidurButton } from './TidurButton'
 import { Toasts } from './Toasts'
+import { TutorialPanel } from './TutorialPanel'
 import { WakeFade } from './WakeFade'
 
 /** The always-on day HUD over the canvas. */
@@ -30,6 +31,7 @@ export function Hud() {
       <Fishing />
       <NightScene />
       <MomentCard />
+      <TutorialPanel />
       <SeasonReport />
       <Ending />
       <WakeFade />

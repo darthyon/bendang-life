@@ -115,6 +115,8 @@ export interface Variety {
   priceMultiplier: number
   weedSpawnMultiplier: number
   harvestWindowDays: number
+  /** The Kitab fact shown on Tok Wan's starter seed card. */
+  factId: string
 }
 
 function window(v: unknown, path: string): Window {
@@ -374,6 +376,7 @@ function parseVarieties(raw: unknown): Record<VarietyId, Variety> {
       priceMultiplier: num(at(o, 'price_multiplier', p), `${p}.price_multiplier`),
       weedSpawnMultiplier: num(at(o, 'weed_spawn_multiplier', p), `${p}.weed_spawn_multiplier`),
       harvestWindowDays: num(at(o, 'harvest_window_days', p), `${p}.harvest_window_days`),
+      factId: str(at(o, 'fact_id', p), `${p}.fact_id`),
     }
   })
   const byId = Object.fromEntries(list.map((v) => [v.id, v]))

@@ -3,6 +3,7 @@ import { applyAction, canApply, type ReasonKey } from '../sim/actions'
 import { advanceDay } from '../sim/day'
 import { canResolve, resolveCard, startNight } from '../sim/events'
 import { buildRecap, type Recap } from '../sim/recap'
+import { tutorialDue } from '../sim/selectors'
 import { finishSeason, isSeasonOver, leaveForKl, newSeason } from '../sim/season'
 import { createRng } from '../sim/rng'
 import { createInitialState } from '../sim/state'
@@ -209,6 +210,7 @@ export const useGame = create<GameStore>((set, get) => {
       if (game.phase !== 'report') return
       commit(newSeason(game))
       set((st) => ({ ui: { ...st.ui, morning: st.ui.morning + 1 } }))
+      get().saveNow()
     },
     leave: () => {
       const { game } = get()
@@ -276,6 +278,7 @@ export const useGame = create<GameStore>((set, get) => {
 export function isPaused(): boolean {
   const { ui, game, screen, settingsOpen } = useGame.getState()
   if (screen !== 'game' || settingsOpen) return true
+  if (tutorialDue(game) !== null && ui.night === null && game.moments.length === 0) return true
   return (
     ui.phoneOpen ||
     ui.kitabOpen ||

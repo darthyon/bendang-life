@@ -2564,3 +2564,250 @@ button {
     animation: none;
   }
 }
+
+/* ---------- Tok Wan's welcome and the tutorial ---------- */
+
+.welcome-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: end center;
+  padding: 16px 16px max(28px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  background: linear-gradient(180deg, transparent 40%, rgb(14 20 18 / 0.5));
+  animation: fade-in 400ms ease-out;
+}
+
+.speech {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  width: min(560px, 94vw);
+  padding: 16px 18px;
+  animation: card-in 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.speech__avatar {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #e8e2d2;
+  color: #3b3122;
+}
+
+.speech__name {
+  margin: 0;
+  color: var(--coin);
+  font: 800 12px/1.3 var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.speech__text {
+  margin: 4px 0 12px;
+  font: 700 16px/1.5 var(--font-body);
+  text-wrap: pretty;
+}
+
+.speech__next {
+  justify-self: end;
+}
+
+.starter {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(900px, 96vw);
+  align-self: center;
+}
+
+.starter__head {
+  text-align: center;
+}
+
+.starter__title {
+  margin: 0;
+  font: 700 26px/1.15 var(--font-display);
+  color: #f4ecd8;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.4);
+}
+
+.starter__body {
+  margin: 6px 0 0;
+  color: #e6e1d2;
+  font: 600 15px/1.4 var(--font-body);
+}
+
+.starter__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.seed-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #efe8db;
+  color: #24271f;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
+  animation: card-in 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seed-card__icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #dbe9c8;
+  color: #3d6b47;
+}
+
+.seed-card__name {
+  margin: 0;
+  font: 700 21px/1.1 var(--font-display);
+}
+
+.seed-card__trait {
+  margin: 0;
+  font: 700 14px/1.4 var(--font-body);
+}
+
+.seed-card__fact {
+  flex: 1;
+  margin: 0;
+  color: #5d5f52;
+  font: 600 12.5px/1.45 var(--font-body);
+}
+
+.seed-card__pick {
+  margin-top: 4px;
+}
+
+.tutorial {
+  position: absolute;
+  top: 50%;
+  right: var(--edge);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(380px, 44vw);
+  max-height: calc(100vh - 2 * var(--edge));
+  overflow-y: auto;
+  padding: 18px 20px;
+  transform: translateY(-50%);
+  background: rgb(30 37 42 / 0.96);
+  animation: fade-in 300ms ease-out;
+}
+
+.tutorial--small {
+  width: min(320px, 44vw);
+}
+
+.tutorial__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 700 22px/1.15 var(--font-display);
+}
+
+.tutorial__icon {
+  color: var(--leaf);
+}
+
+.tutorial__body {
+  margin: -4px 0 0;
+  color: var(--text-soft);
+  font: 600 14px/1.45 var(--font-body);
+}
+
+.tutorial__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--panel-edge);
+  border-bottom: 1px solid var(--panel-edge);
+  list-style: none;
+}
+
+.tutorial__row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.tutorial__keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tutorial__line {
+  display: block;
+  margin: 0;
+  font: 700 14px/1.4 var(--font-body);
+}
+
+.tutorial__sub {
+  display: block;
+  color: var(--text-dim);
+  font: 600 12.5px/1.4 var(--font-body);
+}
+
+.tutorial__task {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgb(166 210 124 / 0.14);
+  color: var(--leaf-strong);
+  font: 700 14px/1.4 var(--font-body);
+}
+
+@media (max-width: 760px), (max-height: 520px) {
+  .starter__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .seed-card {
+    padding: 10px;
+    gap: 4px;
+  }
+
+  .seed-card__icon {
+    display: none;
+  }
+
+  .seed-card__name {
+    font-size: 17px;
+  }
+
+  .seed-card__fact {
+    font-size: 11.5px;
+  }
+
+  .tutorial {
+    width: min(360px, 50vw);
+    padding: 12px 14px;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-layer,
+  .speech,
+  .seed-card,
+  .tutorial {
+    animation: none;
+  }
+}

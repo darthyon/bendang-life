@@ -10,6 +10,7 @@ import { Intro } from './ui/screens/Intro'
 import { Onboarding } from './ui/screens/Onboarding'
 import { Settings } from './ui/screens/Settings'
 import { StartScreen } from './ui/screens/StartScreen'
+import { Welcome } from './ui/welcome/Welcome'
 import { useGame } from './state/store'
 import './styles.css'
 
@@ -50,6 +51,7 @@ export function App() {
         {screen === 'start' && <StartScreen />}
         {screen === 'intro' && <Intro />}
         {screen === 'onboarding' && <Onboarding />}
+        {screen === 'welcome' && <Welcome />}
         {screen === 'goodbye' && <Goodbye />}
         <Settings />
       </div>

@@ -2,9 +2,14 @@ import { useGame } from '../state/store'
 import { COTTAGE } from './layout'
 import { PALETTE } from './palette'
 
-/** Tok Wan at the cottage door, only at the season report (spec §2). Grey-box until M7. */
+/** Tok Wan at the cottage door: his welcome, all of season 1 day 1, and the report (spec §2). */
 export function TokWan() {
-  const atDoor = useGame((s) => s.game.phase === 'report')
+  const atDoor = useGame(
+    (s) =>
+      s.screen === 'welcome' ||
+      s.game.phase === 'report' ||
+      (s.screen === 'game' && s.game.season === 1 && s.game.day === 1),
+  )
   if (!atDoor) return null
   const [x, , z] = COTTAGE.center
   // Just outside the door on the path side (east face of the cottage).
