@@ -368,3 +368,9 @@ toasts:
   fact_unlocked: "Kitab: benda baru!"
   saved: "Dah simpan."
 
+reasons:  # TODO proofread
+  no_benih: "Takdak benih. Order kat Kedai Tani dulu."  # TODO proofread
+  no_baja: "Takdak baja. Order kat Kedai Tani dulu."  # TODO proofread
+  not_ripe: "Padi belum masak lagi."  # TODO proofread
+  loan_limit: "Dah lebih had Agribank tu."  # TODO proofread
+  not_now: "Tak boleh buat la ni."  # TODO proofread

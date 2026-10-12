@@ -363,3 +363,9 @@ toasts:
   fact_unlocked: "New Kitab entry."
   saved: "Saved."
 
+reasons:
+  no_benih: "No seed bag. Order one in Kedai Tani first."
+  no_baja: "No fertiliser bag. Order one in Kedai Tani first."
+  not_ripe: "The padi isn't ripe yet."
+  loan_limit: "That's over the Agribank limit."
+  not_now: "You can't do that right now."
