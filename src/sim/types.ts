@@ -34,6 +34,17 @@ export interface HarvestResult {
   netToPlayerRm: number
 }
 
+export type TaskId =
+  'beli_benih' | 'bajak' | 'tanam' | 'naik_air' | 'baja' | 'siput' | 'rumpai' | 'kering' | 'tuai'
+
+/** One line of Tugas Hari Ini. `plotId` is null for tasks that are not about a plot. */
+export interface TaskRef {
+  id: TaskId
+  plotId: number | null
+  /** Set once the task is completed; stays ticked for the rest of the day. */
+  done: boolean
+}
+
 export interface GameState {
   season: number
   day: number
@@ -46,6 +57,8 @@ export interface GameState {
   gates: Record<GateId, boolean>
   loan: { balance: number; interestCharged: boolean }
   harvests: HarvestResult[]
+  /** Tugas Hari Ini: built each morning, extended as new jobs become due. */
+  tasksToday: TaskRef[]
 }
 
 export type Action =
@@ -60,3 +73,4 @@ export type Action =
   | { type: 'BUY_BAJA' }
   | { type: 'LOAN_TAKE'; amount: number }
   | { type: 'LOAN_REPAY'; amount: number }
+  | { type: 'PASS_TIME'; hours: number }

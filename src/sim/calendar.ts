@@ -43,3 +43,15 @@ export function harvestTiming(day: number, variety: Variety): HarvestTiming {
   if (day <= lastIdealDay(variety)) return 'ideal'
   return 'late'
 }
+
+const DAYS_PER_WEEK = 7
+
+/** Week number of a season day, starting at 1. */
+export function weekOf(day: number): number {
+  return Math.ceil(day / DAYS_PER_WEEK)
+}
+
+/** Weekday 1-7 (Monday-Sunday); season day 1 is a Monday. */
+export function weekdayOf(day: number): number {
+  return ((day - 1) % DAYS_PER_WEEK) + 1
+}

@@ -1,4 +1,5 @@
 import { RULES, VARIETY_LIST } from './rules'
+import { refreshTasks } from './tasks'
 import type { GameState, Plot, VarietyId } from './types'
 
 const PLOT_IDS = [1, 2, 3, 4]
@@ -32,7 +33,7 @@ export function createInitialState({ starter, season = 1 }: NewGameOptions): Gam
   const open = plotsOpenInSeason(season)
   const benih = Object.fromEntries(VARIETY_LIST.map((v) => [v, 0])) as Record<VarietyId, number>
   benih[starter] = 1
-  return {
+  return refreshTasks({
     season,
     day: 1,
     hour: RULES.clock.dayStartHour,
@@ -43,5 +44,6 @@ export function createInitialState({ starter, season = 1 }: NewGameOptions): Gam
     gates: { A: false, B: false },
     loan: { balance: 0, interestCharged: false },
     harvests: [],
-  }
+    tasksToday: [],
+  })
 }

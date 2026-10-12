@@ -1,6 +1,7 @@
 import { bajaStageDue, harvestTiming } from './calendar'
 import { harvestPlot } from './harvest'
 import { RULES, VARIETIES } from './rules'
+import { refreshTasks } from './tasks'
 import type { Action, GameState, JobId, Plot } from './types'
 
 /** An i18n key explaining why an action can't happen now. */
@@ -66,6 +67,8 @@ export function canApply(state: GameState, action: Action): ReasonKey | null {
   switch (action.type) {
     case 'TOGGLE_GATE':
       return null
+    case 'PASS_TIME':
+      return action.hours > 0 ? null : 'reasons.not_now'
     case 'BUY_BENIH':
       return state.coins >= VARIETIES[action.variety].price ? null : 'shop.not_enough'
     case 'BUY_BAJA':
@@ -90,6 +93,11 @@ function updatePlot(state: GameState, plotId: number, patch: (p: Plot) => Partia
 /** Apply an action. Returns the same state object when the action is not allowed. */
 export function applyAction(state: GameState, action: Action): GameState {
   if (canApply(state, action) !== null) return state
+  const next = reduce(state, action)
+  return next === state ? state : refreshTasks(next)
+}
+
+function reduce(state: GameState, action: Action): GameState {
   const job = JOB_OF[action.type]
   const s: GameState = job ? { ...state, hour: state.hour + RULES.jobHours[job] } : state
 
@@ -145,6 +153,8 @@ export function applyAction(state: GameState, action: Action): GameState {
         coins: s.coins + action.amount,
         loan: { ...s.loan, balance: s.loan.balance + action.amount },
       }
+    case 'PASS_TIME':
+      return { ...s, hour: Math.min(RULES.clock.nightStartHour, s.hour + action.hours) }
     case 'LOAN_REPAY':
       return {
         ...s,

@@ -1,6 +1,7 @@
 import { waterTarget } from './calendar'
 import type { Rng } from './rng'
 import { RULES, VARIETIES } from './rules'
+import { refreshTasks } from './tasks'
 import type { GameState, GateId, Plot } from './types'
 
 function inWindow(day: number, w: { fromDay: number; toDay: number }): boolean {
@@ -62,5 +63,11 @@ export function advanceDay(state: GameState, rng: Rng): GameState {
     }
     return { ...ended, ...spawnPests(ended, nextDay, rng) }
   })
-  return { ...state, day: nextDay, hour: RULES.clock.dayStartHour, plots }
+  return refreshTasks({
+    ...state,
+    day: nextDay,
+    hour: RULES.clock.dayStartHour,
+    plots,
+    tasksToday: [],
+  })
 }

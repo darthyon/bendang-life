@@ -1,5 +1,5 @@
 import { canApply, type ReasonKey } from './actions'
-import { bajaStageDue, harvestTiming } from './calendar'
+import { bajaStageDue, harvestTiming, waterTarget } from './calendar'
 import { VARIETIES, VARIETY_LIST } from './rules'
 import type { Action, GameState, GateId } from './types'
 
@@ -63,4 +63,22 @@ export function primaryJob(state: GameState, target: SimTarget): Job | null {
     return job(state, 'actions.baja', { type: 'BAJA', plotId })
   }
   return null
+}
+
+export type Problem = 'ripe' | 'snails' | 'weeds' | 'water_low' | 'water_high' | 'baja'
+
+/** What needs attention on a plot, most urgent first. Empty for unplanted plots. */
+export function plotProblems(state: GameState, plotId: number): Problem[] {
+  const plot = state.plots.find((p) => p.id === plotId)
+  if (!plot || plot.status !== 'planted' || !plot.variety) return []
+  const problems: Problem[] = []
+  if (harvestTiming(state.day, VARIETIES[plot.variety]) !== 'too_early') problems.push('ripe')
+  if (plot.snails > 0) problems.push('snails')
+  if (plot.weeds > 0) problems.push('weeds')
+  const band = waterTarget(state.day)
+  if (plot.waterCm < band.min) problems.push('water_low')
+  if (plot.waterCm > band.max) problems.push('water_high')
+  const stage = bajaStageDue(state.day)
+  if (stage !== null && !plot.bajaDone[stage]) problems.push('baja')
+  return problems
 }

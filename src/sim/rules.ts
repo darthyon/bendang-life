@@ -6,27 +6,27 @@ import type { GateId, JobId, Stage, VarietyId } from './types'
 
 type Obj = Record<string, unknown>
 
-function obj(value: unknown, path: string): Obj {
+export function obj(value: unknown, path: string): Obj {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error(`rules: expected an object at ${path}`)
   }
   return value as Obj
 }
-function arr(value: unknown, path: string): unknown[] {
+export function arr(value: unknown, path: string): unknown[] {
   if (!Array.isArray(value)) throw new Error(`rules: expected a list at ${path}`)
   return value
 }
-function num(value: unknown, path: string): number {
+export function num(value: unknown, path: string): number {
   if (typeof value !== 'number' || Number.isNaN(value)) {
     throw new Error(`rules: expected a number at ${path}`)
   }
   return value
 }
-function str(value: unknown, path: string): string {
+export function str(value: unknown, path: string): string {
   if (typeof value !== 'string') throw new Error(`rules: expected a string at ${path}`)
   return value
 }
-function at(o: Obj, key: string, path: string): unknown {
+export function at(o: Obj, key: string, path: string): unknown {
   if (!(key in o)) throw new Error(`rules: missing ${path}.${key}`)
   return o[key]
 }
@@ -50,7 +50,7 @@ export interface Window {
 
 export interface Rules {
   season: { days: number }
-  clock: { dayStartHour: number; nightStartHour: number }
+  clock: { dayStartHour: number; nightStartHour: number; realSecondsPerGameHour: number }
   water: {
     capCm: number
     gates: Record<GateId, number[]>
@@ -148,6 +148,10 @@ function parseRules(raw: unknown): Rules {
     clock: {
       dayStartHour: num(at(clock, 'day_start_hour', 'clock'), 'clock.day_start_hour'),
       nightStartHour: num(at(clock, 'night_start_hour', 'clock'), 'clock.night_start_hour'),
+      realSecondsPerGameHour: num(
+        at(clock, 'real_seconds_per_game_hour', 'clock'),
+        'clock.real_seconds_per_game_hour',
+      ),
     },
     water: {
       capCm: num(at(water, 'cap_cm', 'water'), 'water.cap_cm'),
