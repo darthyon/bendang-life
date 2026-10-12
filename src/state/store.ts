@@ -17,6 +17,7 @@ export interface Toast {
 
 interface UiState {
   phoneOpen: boolean
+  kitabOpen: boolean
   /** Plot whose panel is open, or null. */
   plotPanelId: number | null
   /** Plot the player is standing in (for Tab), or null. */
@@ -43,6 +44,7 @@ interface GameStore {
   /** Close the recap and start the next morning. */
   wake: () => void
   setPhone: (open: boolean) => void
+  setKitab: (open: boolean) => void
   setPlotPanel: (plotId: number | null) => void
   setStandingPlot: (plotId: number | null) => void
   toast: (key: string, params?: Toast['params']) => void
@@ -83,7 +85,14 @@ export const useGame = create<GameStore>((set, get) => {
     game: createInitialState({ starter: 'mr297' }),
     seed,
     rngState: seed,
-    ui: { phoneOpen: false, plotPanelId: null, standingPlotId: null, morning: 0, night: null },
+    ui: {
+      phoneOpen: false,
+      kitabOpen: false,
+      plotPanelId: null,
+      standingPlotId: null,
+      morning: 0,
+      night: null,
+    },
     toasts: [],
     dispatch: (action) => {
       const { game, toast } = get()
@@ -102,7 +111,7 @@ export const useGame = create<GameStore>((set, get) => {
       const rng = rngNow()
       const night = startNight(game, rng)
       commit(night, rng.state())
-      set((st) => ({ ui: { ...st.ui, phoneOpen: false, plotPanelId: null } }))
+      set((st) => ({ ui: { ...st.ui, phoneOpen: false, kitabOpen: false, plotPanelId: null } }))
       if (night.pendingCard) set((st) => ({ ui: { ...st.ui, night: { step: 'card' } } }))
       else endNight()
     },
@@ -120,7 +129,8 @@ export const useGame = create<GameStore>((set, get) => {
       if (isSeasonOver(game)) commit(finishSeason(game))
       set((st) => ({ ui: { ...st.ui, night: null, morning: st.ui.morning + 1 } }))
     },
-    setPhone: (open) => set((s) => ({ ui: { ...s.ui, phoneOpen: open } })),
+    setPhone: (open) => set((s) => ({ ui: { ...s.ui, phoneOpen: open, kitabOpen: false } })),
+    setKitab: (open) => set((s) => ({ ui: { ...s.ui, kitabOpen: open, phoneOpen: false } })),
     setPlotPanel: (plotId) => set((s) => ({ ui: { ...s.ui, plotPanelId: plotId } })),
     setStandingPlot: (plotId) =>
       set((s) =>
@@ -136,8 +146,8 @@ export const useGame = create<GameStore>((set, get) => {
   }
 })
 
-/** True while time should stand still (spec §4.2): phone, night scene, report. */
+/** True while time should stand still (spec §4.2): phone, Kitab, night scene, report. */
 export function isPaused(): boolean {
   const { ui, game } = useGame.getState()
-  return ui.phoneOpen || ui.night !== null || game.phase !== 'playing'
+  return ui.phoneOpen || ui.kitabOpen || ui.night !== null || game.phase !== 'playing'
 }

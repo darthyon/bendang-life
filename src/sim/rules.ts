@@ -79,6 +79,10 @@ export interface Rules {
   }
   loan: { maxAmount: number; seasonRate: number }
   plotsBySeason: { season: number; plots: number[] }[]
+  unlocks: {
+    live: { season: number; day: number }
+    raya: { season: number; day: number }
+  }
   events: {
     firstCardNight: number
     cardNightEvery: [number, number]
@@ -98,6 +102,11 @@ export interface Variety {
 function window(v: unknown, path: string): Window {
   const o = obj(v, path)
   return { fromDay: num(at(o, 'from_day', path), path), toDay: num(at(o, 'to_day', path), path) }
+}
+
+function seasonDay(v: unknown, path: string): { season: number; day: number } {
+  const o = obj(v, path)
+  return { season: num(at(o, 'season', path), path), day: num(at(o, 'day', path), path) }
 }
 
 function parseRules(raw: unknown): Rules {
@@ -224,6 +233,13 @@ function parseRules(raw: unknown): Rules {
     loan: {
       maxAmount: num(at(loan, 'max_amount', 'loan'), 'loan.max_amount'),
       seasonRate: num(at(loan, 'season_rate', 'loan'), 'loan.season_rate'),
+    },
+    unlocks: {
+      live: seasonDay(at(obj(at(r, 'live', 'rules'), 'live'), 'unlock', 'live'), 'live.unlock'),
+      raya: seasonDay(
+        at(obj(at(r, 'hantu_raya', 'rules'), 'hantu_raya'), 'unlock', 'hantu_raya'),
+        'hantu_raya.unlock',
+      ),
     },
     events: {
       firstCardNight: num(at(events, 'first_card_night', 'events'), 'events.first_card_night'),

@@ -1,3 +1,4 @@
+import { Kitab } from '../kitab/Kitab'
 import { NightScene } from '../night/NightScene'
 import { PlotPanel } from '../panels/PlotPanel'
 import { Phone } from '../phone/Phone'
@@ -21,6 +22,7 @@ export function Hud() {
       <PlotPanel />
       <Toasts />
       <Phone />
+      <Kitab />
       <NightScene />
       <WakeFade />
     </div>

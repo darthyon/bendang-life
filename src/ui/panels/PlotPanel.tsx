@@ -6,7 +6,7 @@ import { RULES } from '../../sim/rules'
 import { primaryJob } from '../../sim/selectors'
 import type { Action, JobId } from '../../sim/types'
 import { useGame } from '../../state/store'
-import { CloseIcon, DropIcon, SackIcon, SnailIcon, WeedIcon } from '../icons'
+import { BookIcon, CloseIcon, DropIcon, SackIcon, SnailIcon, WeedIcon } from '../icons'
 
 const JOBS: { job: JobId; action: (plotId: number) => Action }[] = [
   { job: 'bajak', action: (plotId) => ({ type: 'BAJAK', plotId }) },
@@ -50,6 +50,7 @@ export function PlotPanel() {
   const plotId = useGame((s) => s.ui.plotPanelId)
   const game = useGame((s) => s.game)
   const close = useGame((s) => s.setPlotPanel)
+  const setKitab = useGame((s) => s.setKitab)
   const plot = game.plots.find((p) => p.id === plotId)
   if (!plot) return null
 
@@ -202,6 +203,10 @@ export function PlotPanel() {
           })}
         </ul>
       )}
+      <button type="button" className="btn plot-panel__kitab" onClick={() => setKitab(true)}>
+        <BookIcon size={18} />
+        {t('plot_panel.ask_kitab')}
+      </button>
     </aside>
   )
 }

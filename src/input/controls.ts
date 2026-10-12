@@ -11,23 +11,24 @@ export function attachControls(): () => void {
     ) {
       return
     }
-    const { ui, game, sleep, setPhone, setPlotPanel } = useGame.getState()
+    const { ui, game, sleep, setPhone, setKitab, setPlotPanel } = useGame.getState()
     if (e.code === 'Tab') e.preventDefault()
     // The night scene and the season report take over; day controls wait.
     if (ui.night || game.phase !== 'playing') return
     switch (e.code) {
       case 'KeyZ':
-        if (!ui.phoneOpen) sleep()
+        if (!ui.phoneOpen && !ui.kitabOpen) sleep()
         break
       case 'KeyF':
         setPhone(!ui.phoneOpen)
         break
       case 'Tab':
-        if (ui.phoneOpen) break
+        if (ui.phoneOpen || ui.kitabOpen) break
         setPlotPanel(ui.plotPanelId !== null ? null : ui.standingPlotId)
         break
       case 'Escape':
         if (ui.phoneOpen) setPhone(false)
+        else if (ui.kitabOpen) setKitab(false)
         else if (ui.plotPanelId !== null) setPlotPanel(null)
         break
     }
