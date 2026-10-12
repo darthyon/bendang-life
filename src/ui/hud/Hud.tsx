@@ -1,3 +1,4 @@
+import { Fishing } from '../fishing/Fishing'
 import { Kitab } from '../kitab/Kitab'
 import { NightScene } from '../night/NightScene'
 import { PlotPanel } from '../panels/PlotPanel'
@@ -25,6 +26,7 @@ export function Hud() {
       <Toasts />
       <Phone />
       <Kitab />
+      <Fishing />
       <NightScene />
       <SeasonReport />
       <Ending />

@@ -70,7 +70,7 @@ docs/           mvp-spec.md, assets-and-tools.md, refs/
 
 ## Controls
 
-- Desktop: WASD or arrow keys move, E or Space interacts, Tab opens the plot panel, F opens the phone (pauses the game), Z sleeps (ends the day), Esc closes panels or opens the menu.
+- Desktop: WASD or arrow keys move, E or Space interacts, Q does serkap on a drained plot (owner decision, M5), Tab opens the plot panel, F opens the phone (pauses the game), Z sleeps (ends the day), Esc closes panels or opens the menu.
 - Touch: landscape only. Virtual joystick bottom-left, action button bottom-right. Show a "Pusing fon hang" overlay in portrait. Try `screen.orientation.lock('landscape')` after entering fullscreen and ignore failures (iOS Safari does not support it).
 
 ## Performance budget

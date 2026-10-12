@@ -3,9 +3,9 @@ import { weekOf, weekdayOf } from '../../sim/calendar'
 import { RULES } from '../../sim/rules'
 import { useGame } from '../../state/store'
 import { formatClock, formatRm } from '../format'
-import { CalendarIcon, CoinIcon, SackIcon, SeedlingIcon } from '../icons'
+import { CalendarIcon, CoinIcon, FishIcon, SackIcon, SeedlingIcon } from '../icons'
 
-/** Top-right: coins, benih, baja, then the day and time (spec §7). Fish arrives in M5. */
+/** Top-right: coins, benih, baja, fish, then the day and time (spec §7). */
 export function StatPills() {
   const game = useGame((s) => s.game)
   const night = useGame((s) => s.ui.night)
@@ -13,6 +13,7 @@ export function StatPills() {
   const day = night?.step === 'recap' ? night.recap.day : game.day
   const hour = night ? RULES.clock.nightStartHour : game.hour
   const benih = Object.values(game.benih).reduce((a, b) => a + b, 0)
+  const fish = Object.values(game.fish).reduce((a, b) => a + b, 0)
 
   return (
     <div className="pills">
@@ -30,6 +31,11 @@ export function StatPills() {
         <SackIcon className="pill__icon pill__icon--sack" />
         <span className="sr-only">{t('hud.fert_bags')}</span>
         <span className="pill__value">{game.baja}</span>
+      </div>
+      <div className="panel pill" title={t('hud.fish')}>
+        <FishIcon className="pill__icon pill__icon--fish" />
+        <span className="sr-only">{t('hud.fish')}</span>
+        <span className="pill__value">{fish}</span>
       </div>
       <div className="panel pill pill--clock">
         <CalendarIcon className="pill__icon pill__icon--sun" size={24} />

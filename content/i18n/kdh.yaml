@@ -145,6 +145,9 @@ actions:
   tidur: "Tidoq"
 
 phone:                    # TODO proofread
+  sell_all: "Jual semua"  # TODO proofread
+  no_fish: "Takdak ikan lagi. Pi mancing kat longkang."  # TODO proofread
+  price_today: "Harga hari ni ×{n}"  # TODO proofread
   no_signal: "Fon hang mati. Lagi {n} hari baru hidup."  # TODO proofread
   title: "Fon"
   app_kedai: "Kedai Tani"

@@ -1,7 +1,8 @@
 import { canApply, type ReasonKey } from './actions'
 import { bajaStageDue, harvestTiming, waterTarget } from './calendar'
 import { VARIETIES, VARIETY_LIST } from './rules'
-import type { Action, GameState, GateId } from './types'
+import { fishSpotOpen } from './fishing'
+import type { Action, FishSpot, GameState, GateId } from './types'
 
 /** What the player stands at, as the sim sees it. */
 export type SimTarget =
@@ -14,6 +15,8 @@ export interface Job {
   action: Action | null
   /** Why the action is blocked, if it is. */
   reason: ReasonKey | null
+  /** Set when E starts the fishing minigame here instead of an action. */
+  fishing?: FishSpot
 }
 
 function job(state: GameState, labelKey: string, action: Action | null): Job {
@@ -29,8 +32,12 @@ export function primaryJob(state: GameState, target: SimTarget): Job | null {
         gateId: target.gateId,
       })
     case 'longkang':
-      // Fishing arrives in M5.
-      return { labelKey: 'actions.pancing', action: null, reason: null }
+      return {
+        labelKey: 'actions.pancing',
+        action: null,
+        reason: null,
+        fishing: { kind: 'longkang' },
+      }
     case 'plot':
       break
   }
@@ -81,4 +88,12 @@ export function plotProblems(state: GameState, plotId: number): Problem[] {
   const stage = bajaStageDue(state.day)
   if (stage !== null && !plot.bajaDone[stage]) problems.push('baja')
   return problems
+}
+
+/** The second job at a plot: serkap with Q when the plot is drained (spec §4.8). */
+export function serkapJob(state: GameState, target: SimTarget): Job | null {
+  if (target.kind !== 'plot') return null
+  const spot: FishSpot = { kind: 'plot', plotId: target.plotId }
+  if (!fishSpotOpen(state, spot)) return null
+  return { labelKey: 'actions.serkap', action: null, reason: null, fishing: spot }
 }

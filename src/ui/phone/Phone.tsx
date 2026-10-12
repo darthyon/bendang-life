@@ -1,15 +1,26 @@
 import { useState } from 'react'
 import { t } from '../../i18n'
-import { RULES, VARIETIES, VARIETY_LIST } from '../../sim/rules'
+import { fishSaleValue } from '../../sim/fishing'
+import { liveUnlocked } from '../../sim/live'
+import { FISH_LIST, RULES, VARIETIES, VARIETY_LIST } from '../../sim/rules'
 import type { Action } from '../../sim/types'
 import { useGame } from '../../state/store'
 import { formatRm } from '../format'
-import { BackIcon, BankIcon, CloseIcon, SackIcon, SeedlingIcon, StoreIcon } from '../icons'
+import {
+  BackIcon,
+  BankIcon,
+  CloseIcon,
+  FishIcon,
+  LiveIcon,
+  SackIcon,
+  SeedlingIcon,
+  StoreIcon,
+} from '../icons'
 
-type App = 'home' | 'kedai' | 'bank'
+type App = 'home' | 'kedai' | 'bank' | 'jual' | 'live'
 const LOAN_STEP = 100
 
-/** Phone (F). Pauses the game while open (spec §4.6). Jual Ikan and Live arrive in M5. */
+/** Phone (F). Pauses the game while open (spec §4.6). */
 export function Phone() {
   const open = useGame((s) => s.ui.phoneOpen)
   const setPhone = useGame((s) => s.setPhone)
@@ -63,6 +74,8 @@ export function Phone() {
               {app === 'home' && <Home onOpen={setApp} />}
               {app === 'kedai' && <Kedai />}
               {app === 'bank' && <Bank />}
+              {app === 'jual' && <JualIkan />}
+              {app === 'live' && <Live />}
             </>
           )}
         </div>
@@ -72,6 +85,8 @@ export function Phone() {
 }
 
 function Home({ onOpen }: { onOpen: (app: App) => void }) {
+  const game = useGame((s) => s.game)
+  const liveOpen = liveUnlocked(game)
   return (
     <div className="apps">
       <button type="button" className="app-tile" onClick={() => onOpen('kedai')}>
@@ -86,6 +101,124 @@ function Home({ onOpen }: { onOpen: (app: App) => void }) {
         </span>
         {t('phone.app_bank')}
       </button>
+      <button type="button" className="app-tile" onClick={() => onOpen('jual')}>
+        <span className="app-tile__icon app-tile__icon--jual">
+          <FishIcon size={30} />
+        </span>
+        {t('phone.app_jual')}
+      </button>
+      <button
+        type="button"
+        className="app-tile"
+        aria-disabled={!liveOpen}
+        onClick={() => liveOpen && onOpen('live')}
+      >
+        <span className={`app-tile__icon app-tile__icon--live${liveOpen ? '' : ' is-locked'}`}>
+          <LiveIcon size={30} />
+        </span>
+        {t('phone.app_live')}
+        {!liveOpen && (
+          <span className="app-tile__note">
+            {t('live.locked', { day: RULES.unlocks.live.day })}
+          </span>
+        )}
+      </button>
+    </div>
+  )
+}
+
+function JualIkan() {
+  const game = useGame((s) => s.game)
+  const toast = useGame((s) => s.toast)
+  const run = useRun()
+  const total = fishSaleValue(game)
+  const owned = FISH_LIST.filter((id) => game.fish[id] > 0)
+
+  return (
+    <div className="shop">
+      {game.fishPriceToday !== 1 && (
+        <p className="shop__boost">{t('phone.price_today', { n: game.fishPriceToday })}</p>
+      )}
+      {owned.length === 0 ? (
+        <p className="shop__empty">{t('phone.no_fish')}</p>
+      ) : (
+        <>
+          <ul className="shop__list">
+            {owned.map((id) => (
+              <li key={id} className="item">
+                <FishIcon size={22} className="item__icon item__icon--fish" />
+                <div className="item__body">
+                  <span className="item__name">{t(`fishing.${id}`)}</span>
+                  <span className="item__owned">{t('shop.owned', { n: game.fish[id] })}</span>
+                </div>
+                <span className="item__price">
+                  RM{formatRm(RULES.fishing.fish[id].price * game.fishPriceToday)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            className="btn btn--primary shop__sell"
+            onClick={() => {
+              if (run({ type: 'SELL_FISH' })) toast('phone.fish_sold', { n: formatRm(total) })
+            }}
+          >
+            {t('phone.sell_all')} · {t('fishing.sell', { n: formatRm(total) })}
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
+const BONUS_LABEL = {
+  farm_job: 'live.bonus_farm_job',
+  fish: 'live.bonus_fish',
+  harvest: 'live.bonus_harvest',
+} as const
+
+function Live() {
+  const game = useGame((s) => s.game)
+  const toast = useGame((s) => s.toast)
+  const run = useRun()
+  const done = game.today.wentLive
+
+  return (
+    <div className="live">
+      <p className="live__followers">{t('live.followers', { n: formatRm(game.followers) })}</p>
+      {done && game.lastLive ? (
+        <div className="live__result">
+          <p>
+            {t('live.result', {
+              viewers: formatRm(game.lastLive.viewers),
+              coins: game.lastLive.coins,
+            })}
+          </p>
+          {game.lastLive.bonuses.length > 0 && (
+            <ul className="live__bonuses">
+              {game.lastLive.bonuses.map((b) => (
+                <li key={b}>{t(BONUS_LABEL[b])}</li>
+              ))}
+            </ul>
+          )}
+          <p className="live__done">{t('live.done_today')}</p>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="btn btn--primary live__start"
+          onClick={() => {
+            if (!run({ type: 'GO_LIVE' })) return
+            const result = useGame.getState().game.lastLive
+            if (result)
+              toast('live.result', { viewers: formatRm(result.viewers), coins: result.coins })
+          }}
+        >
+          <LiveIcon size={20} />
+          {t('live.start')}
+        </button>
+      )}
     </div>
   )
 }

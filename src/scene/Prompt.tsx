@@ -8,10 +8,13 @@ import { t } from '../i18n'
 /** Context prompt floating above the player's head. */
 export function Prompt({
   job,
+  second,
   blocked,
   focus,
 }: {
   job: Job | null
+  /** Serkap with Q, when the plot is drained. */
+  second: Job | null
   /** Reason shown after a refused E press. */
   blocked: string | null
   focus: RefObject<Vector3>
@@ -25,12 +28,23 @@ export function Prompt({
 
   return (
     <group ref={group}>
-      {job && (
+      {(job || second) && (
         <Html center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
-          <div className="prompt" role="status">
-            {job.action && <kbd className="prompt__key">E</kbd>}
-            <span>{t(job.labelKey)}</span>
-            {blocked && <span className="prompt__reason">{t(blocked)}</span>}
+          <div className="prompt-stack" role="status">
+            {job && (
+              <div className="prompt">
+                {(job.action || job.fishing) && <kbd className="prompt__key">E</kbd>}
+                <span>{t(job.labelKey)}</span>
+                {blocked && <span className="prompt__reason">{t(blocked)}</span>}
+              </div>
+            )}
+            {second && (
+              <div className="prompt prompt--second">
+                <kbd className="prompt__key">Q</kbd>
+                <span>{t(second.labelKey)}</span>
+                {!job && blocked && <span className="prompt__reason">{t(blocked)}</span>}
+              </div>
+            )}
           </div>
         </Html>
       )}

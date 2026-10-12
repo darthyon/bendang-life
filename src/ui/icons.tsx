@@ -175,3 +175,18 @@ export const BookIcon = (p: IconProps) => (
     <path d="M12 6.1v13" />
   </Svg>
 )
+
+export const FishIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3 12c2.4-3.4 5.6-5 9-5 3.6 0 6.3 2 8 5-1.7 3-4.4 5-8 5-3.4 0-6.6-1.6-9-5Z" />
+    <path d="M3 12 1.5 8.5M3 12l-1.5 3.5" />
+    <circle cx="15.5" cy="11" r=".6" fill="currentColor" />
+  </Svg>
+)
+
+export const LiveIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="2.2" />
+    <path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14" />
+  </Svg>
+)

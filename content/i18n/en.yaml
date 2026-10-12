@@ -140,6 +140,9 @@ actions:
   tidur: "Sleep"
 
 phone:
+  sell_all: "Sell everything"
+  no_fish: "No fish yet. Try the longkang."
+  price_today: "Today's price ×{n}"
   no_signal: "Your phone is dead. It comes back in {n} days."
   title: "Phone"
   app_kedai: "Farm Shop"

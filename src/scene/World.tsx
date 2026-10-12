@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Vector3 } from 'three'
 import { attachKeyboard } from '../input/keyboard'
 import { findTarget, type Target } from '../input/interactions'
-import { primaryJob } from '../sim/selectors'
+import { primaryJob, serkapJob } from '../sim/selectors'
 import { isPaused, useGame } from '../state/store'
 import { CameraRig } from './CameraRig'
 import { Island } from './Island'
@@ -21,6 +21,7 @@ import { PALETTE } from './palette'
 
 const BLOCKED_MS = 1800
 const INTERACT_KEYS = ['KeyE', 'Space']
+const SERKAP_KEY = 'KeyQ'
 
 export function World() {
   const player = useRef(new Vector3(PLAYER_START[0], 0, PLAYER_START[1]))
@@ -35,17 +36,21 @@ export function World() {
     (s) => s.ui.phoneOpen || s.ui.kitabOpen || s.ui.night !== null || s.game.phase !== 'playing',
   )
   const job = target && !paused ? primaryJob(game, target) : null
+  const second = target && !paused ? serkapJob(game, target) : null
 
   useEffect(() => {
     let timer: number | undefined
     const detach = attachKeyboard((code) => {
-      if (!INTERACT_KEYS.includes(code) || isPaused()) return
+      const serkap = code === SERKAP_KEY
+      if ((!INTERACT_KEYS.includes(code) && !serkap) || isPaused()) return
       const current = targetRef.current
       if (!current) return
-      const { game: now, dispatch } = useGame.getState()
-      const action = primaryJob(now, current)?.action
-      if (!action) return
-      const reason = dispatch(action)
+      const { game: now, dispatch, startFishing } = useGame.getState()
+      const job = serkap ? serkapJob(now, current) : primaryJob(now, current)
+      let reason: string | null
+      if (job?.fishing) reason = startFishing(job.fishing)
+      else if (job?.action) reason = dispatch(job.action)
+      else return
       window.clearTimeout(timer)
       setBlocked(reason)
       if (reason) timer = window.setTimeout(() => setBlocked(null), BLOCKED_MS)
@@ -86,7 +91,7 @@ export function World() {
       <TokWan />
       {!paused && <ProblemIcons />}
       <Player position={player} />
-      <Prompt job={job} blocked={blocked} focus={player} />
+      <Prompt job={job} second={second} blocked={blocked} focus={player} />
     </>
   )
 }

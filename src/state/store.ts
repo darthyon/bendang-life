@@ -6,7 +6,8 @@ import { buildRecap, type Recap } from '../sim/recap'
 import { finishSeason, isSeasonOver, leaveForKl, newSeason } from '../sim/season'
 import { createRng } from '../sim/rng'
 import { createInitialState } from '../sim/state'
-import type { Action, GameState } from '../sim/types'
+import { startFishing as startFishingSim } from '../sim/fishing'
+import type { Action, FishId, FishSpot, GameState } from '../sim/types'
 
 export interface Toast {
   id: number
@@ -24,6 +25,11 @@ interface UiState {
   standingPlotId: number | null
   /** Increments on each new morning; drives the wake-up fade. */
   morning: number
+  /** The fishing minigame: the fish on the line and the green zone, then the result. */
+  fishing:
+    | { step: 'cast'; spot: FishSpot; fish: FishId; zone: number }
+    | { step: 'result'; spot: FishSpot; fish: FishId; caught: boolean }
+    | null
   /** The night scene: the card (if any), then the recap. Null during the day. */
   night: { step: 'card' } | { step: 'recap'; recap: Recap } | null
 }
@@ -43,6 +49,11 @@ interface GameStore {
   chooseCard: (optionId: string) => ReasonKey | null
   /** Close the recap and start the next morning. */
   wake: () => void
+  /** Start pancing or serkap at a spot. Returns why it can't start, or null. */
+  startFishing: (spot: FishSpot) => ReasonKey | null
+  /** The needle stopped: in the green zone or not. */
+  landFish: (caught: boolean) => void
+  closeFishing: () => void
   /** After the report: Musim Baru, or Balik KL. */
   stay: () => void
   leave: () => void
@@ -100,6 +111,7 @@ export const useGame = create<GameStore>((set, get) => {
       standingPlotId: null,
       morning: 0,
       night: null,
+      fishing: null,
     },
     toasts: [],
     dispatch: (action) => {
@@ -139,6 +151,28 @@ export const useGame = create<GameStore>((set, get) => {
       if (isSeasonOver(game)) commit(finishSeason(game))
       set((st) => ({ ui: { ...st.ui, night: null, morning: st.ui.morning + 1 } }))
     },
+    startFishing: (spot) => {
+      const { game } = get()
+      const rng = rngNow()
+      const start = startFishingSim(game, spot, rng)
+      if (typeof start === 'string') return start
+      // Check time with the real action before casting.
+      const reason = canApply(game, { type: 'FISH', spot, fish: start.fish, caught: false })
+      if (reason) return reason
+      set((st) => ({
+        rngState: rng.state(),
+        ui: { ...st.ui, fishing: { step: 'cast', spot, ...start } },
+      }))
+      return null
+    },
+    landFish: (caught) => {
+      const { ui, dispatch } = get()
+      if (ui.fishing?.step !== 'cast') return
+      const { spot, fish } = ui.fishing
+      dispatch({ type: 'FISH', spot, fish, caught })
+      set((st) => ({ ui: { ...st.ui, fishing: { step: 'result', spot, fish, caught } } }))
+    },
+    closeFishing: () => set((st) => ({ ui: { ...st.ui, fishing: null } })),
     stay: () => {
       const { game } = get()
       if (game.phase !== 'report') return
@@ -166,8 +200,14 @@ export const useGame = create<GameStore>((set, get) => {
   }
 })
 
-/** True while time should stand still (spec §4.2): phone, Kitab, night scene, report. */
+/** True while time should stand still (spec §4.2): phone, Kitab, fishing, night scene, report. */
 export function isPaused(): boolean {
   const { ui, game } = useGame.getState()
-  return ui.phoneOpen || ui.kitabOpen || ui.night !== null || game.phase !== 'playing'
+  return (
+    ui.phoneOpen ||
+    ui.kitabOpen ||
+    ui.fishing !== null ||
+    ui.night !== null ||
+    game.phase !== 'playing'
+  )
 }
