@@ -2,7 +2,7 @@ import { canApply, type ReasonKey } from './actions'
 import { bajaStageDue, harvestTiming, waterTarget } from './calendar'
 import { VARIETIES, VARIETY_LIST } from './rules'
 import { fishSpotOpen } from './fishing'
-import type { Action, FishSpot, GameState, GateId } from './types'
+import type { Action, FishSpot, GameState, GateId, TutorialStep } from './types'
 
 /** What the player stands at, as the sim sees it. */
 export type SimTarget =
@@ -96,4 +96,14 @@ export function serkapJob(state: GameState, target: SimTarget): Job | null {
   const spot: FishSpot = { kind: 'plot', plotId: target.plotId }
   if (!fishSpotOpen(state, spot)) return null
   return { labelKey: 'actions.serkap', action: null, reason: null, fishing: spot }
+}
+
+/** The tutorial panel to show now, if any (spec §6 step 5). */
+export function tutorialDue(state: GameState): TutorialStep | null {
+  if (state.phase !== 'playing') return null
+  if (!state.tutorial.controlsSeen && state.season === 1 && state.day === 1) return 'controls'
+  // The phone comes in on the first morning a baja stage is due on a planted plot.
+  const planted = state.plots.some((p) => p.status === 'planted')
+  if (!state.tutorial.phoneSeen && planted && bajaStageDue(state.day) !== null) return 'phone'
+  return null
 }

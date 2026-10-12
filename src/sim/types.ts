@@ -18,6 +18,11 @@ export interface LiveResult {
   bonuses: ('farm_job' | 'fish' | 'harvest')[]
 }
 
+/** The four onboarding presets (spec §6): straw hat, cap, headscarf, bun. */
+export type PresetId = 'hat' | 'cap' | 'scarf' | 'bun'
+
+export type TutorialStep = 'controls' | 'phone'
+
 export type PlotStatus = 'locked' | 'empty' | 'ploughed' | 'planted' | 'harvested'
 
 export interface Plot {
@@ -87,6 +92,10 @@ export interface TimedEffect {
 }
 
 export interface GameState {
+  /** Chosen in onboarding. An empty name shows the placeholder. */
+  player: { name: string; preset: PresetId }
+  /** One-off tutorial panels already shown. */
+  tutorial: { controlsSeen: boolean; phoneSeen: boolean }
   season: number
   day: number
   /** Hour of day, 6 to 19. Jobs move it forward. */
@@ -158,3 +167,4 @@ export type Action =
   | { type: 'SELL_FISH' }
   | { type: 'GO_LIVE' }
   | { type: 'ACK_MOMENT' }
+  | { type: 'ACK_TUTORIAL'; step: TutorialStep }

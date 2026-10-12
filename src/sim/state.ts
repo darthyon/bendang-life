@@ -1,7 +1,7 @@
 import { RULES, VARIETY_LIST } from './rules'
 import { unlockBy } from './facts'
 import { refreshTasks } from './tasks'
-import type { GameState, Plot, VarietyId } from './types'
+import type { GameState, Plot, PresetId, VarietyId } from './types'
 
 const PLOT_IDS = [1, 2, 3, 4]
 
@@ -41,16 +41,33 @@ export const EMPTY_TODAY: GameState['today'] = {
   wentLive: false,
 }
 
+export const NAME_MAX = 16
+export const PRESETS: readonly PresetId[] = ['hat', 'cap', 'scarf', 'bun']
+
+/** Trim, collapse inner spaces and cap the length. Empty means "use the placeholder". */
+export function normalizeName(raw: string): string {
+  return raw.trim().replace(/\s+/g, ' ').slice(0, NAME_MAX).trim()
+}
+
 export interface NewGameOptions {
-  /** Tok Wan's starter seed (picked in onboarding from M6). */
+  /** Tok Wan's starter seed, picked at his welcome. */
   starter: VarietyId
+  name?: string
+  preset?: PresetId
   season?: number
 }
 
-export function createInitialState({ starter, season = 1 }: NewGameOptions): GameState {
+export function createInitialState({
+  starter,
+  name = '',
+  preset = 'hat',
+  season = 1,
+}: NewGameOptions): GameState {
   const benih = Object.fromEntries(VARIETY_LIST.map((v) => [v, 0])) as Record<VarietyId, number>
   benih[starter] = 1
   const state: GameState = {
+    player: { name: normalizeName(name), preset },
+    tutorial: { controlsSeen: false, phoneSeen: false },
     season,
     day: 1,
     hour: RULES.clock.dayStartHour,

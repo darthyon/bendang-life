@@ -126,6 +126,8 @@ function baseReason(state: GameState, action: Action): ReasonKey | null {
       return state.today.wentLive ? 'live.done_today' : null
     case 'ACK_MOMENT':
       return state.moments.length > 0 ? null : 'reasons.not_now'
+    case 'ACK_TUTORIAL':
+      return null
     default:
       return plotReason(state, action)
   }
@@ -251,6 +253,14 @@ function reduce(state: GameState, action: Action): GameState {
     }
     case 'GO_LIVE':
       return goLive(s)
+    case 'ACK_TUTORIAL':
+      return {
+        ...s,
+        tutorial: {
+          ...s.tutorial,
+          [action.step === 'controls' ? 'controlsSeen' : 'phoneSeen']: true,
+        },
+      }
     case 'ACK_MOMENT': {
       const [moment, ...rest] = s.moments
       if (!moment) return state
