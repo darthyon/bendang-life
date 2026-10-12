@@ -1311,6 +1311,15 @@ button {
   color: var(--coin);
 }
 
+.recap__card {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgb(169 139 214 / 0.14);
+  color: #d7c6f2;
+  font: 700 13.5px/1.4 var(--font-body);
+}
+
 .recap__quiet {
   margin: 0;
   color: var(--text-soft);
@@ -1799,5 +1808,66 @@ button {
   .report,
   .ending {
     animation: none;
+  }
+}
+
+@media (max-height: 520px) {
+  .night {
+    padding: 8px;
+  }
+
+  /* Art window and body side by side, so the choices fit on a landscape phone. */
+  .card {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px 12px;
+    width: min(620px, 96vw);
+    padding: 12px 14px;
+  }
+
+  .card__head,
+  .card__options,
+  .card__ask {
+    grid-column: 1 / -1;
+  }
+
+  .card__title {
+    font-size: 19px;
+  }
+
+  .card__art {
+    height: 76px;
+  }
+
+  .card__art svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card__body {
+    align-self: center;
+    text-align: left;
+    font-size: 13.5px;
+  }
+
+  .card__options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 6px;
+  }
+
+  .card__option {
+    padding: 8px 10px;
+  }
+
+  .card::before,
+  .card::after {
+    display: none;
+  }
+
+  .recap {
+    max-height: calc(100vh - 16px);
+    padding: 12px 14px;
+    gap: 8px;
   }
 }

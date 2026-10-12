@@ -179,6 +179,7 @@ bank:
   repay_all: "Repay everything"
 
 night:
+  recap_card: "Tonight: {card} — {choice}"
   recap_title: "Tonight"
   recap_water: "Water {from} → {to} cm"
   recap_gate_open: "gate {gate} open"

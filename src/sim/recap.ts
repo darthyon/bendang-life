@@ -21,6 +21,8 @@ export interface RecapPlot {
 
 export interface Recap {
   day: number
+  /** Tonight's card and the option taken, if there was a card. */
+  card: { id: string; optionId: string } | null
   plots: RecapPlot[]
   money: { earned: number; spent: number }
   /** What is due tomorrow: the new morning's open tasks. */
@@ -33,10 +35,15 @@ function gateOf(plotId: number): GateId | null {
   return null
 }
 
-/** Compare the evening (`before`) with the next morning (`after`). Only planted plots are listed. */
-export function buildRecap(before: GameState, after: GameState): Recap {
+/**
+ * Compare the evening (`before`, ahead of any night card) with the next morning (`after`).
+ * `card` names tonight's card so the recap can explain a change it made. Only planted plots are listed.
+ */
+export function buildRecap(before: GameState, after: GameState, card: Recap['card'] = null): Recap {
   const band = waterTarget(before.day)
-  const cardHealth = before.effects.some((e) => e.kind === 'health')
+  const cardHealth =
+    before.effects.some((e) => e.kind === 'health') ||
+    after.effects.some((e) => e.kind === 'health' && !before.effects.includes(e))
   const plots = before.plots
     .filter((p) => p.status === 'planted')
     .map((p): RecapPlot => {
@@ -63,6 +70,7 @@ export function buildRecap(before: GameState, after: GameState): Recap {
     })
   return {
     day: before.day,
+    card,
     plots,
     money: { ...before.today },
     tomorrow: taskStatus(after).filter((t) => !t.done),

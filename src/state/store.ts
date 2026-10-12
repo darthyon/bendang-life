@@ -74,13 +74,18 @@ export const useGame = create<GameStore>((set, get) => {
     if (next.facts.length > before.facts.length) get().toast('toasts.fact_unlocked')
   }
 
+  // The evening as it was before tonight's card, so the recap shows what the card changed.
+  let evening: GameState | null = null
+
   /** Run the night: advance to the next morning and show the recap. */
-  const endNight = () => {
+  const endNight = (card: { id: string; optionId: string } | null = null) => {
     const before = get().game
     const rng = rngNow()
     const after = advanceDay(before, rng)
     commit(after, rng.state())
-    set((st) => ({ ui: { ...st.ui, night: { step: 'recap', recap: buildRecap(before, after) } } }))
+    const recap = buildRecap(evening ?? before, after, card)
+    evening = null
+    set((st) => ({ ui: { ...st.ui, night: { step: 'recap', recap } } }))
   }
 
   return {
@@ -112,6 +117,7 @@ export const useGame = create<GameStore>((set, get) => {
       const { game, ui } = get()
       if (ui.night || game.phase !== 'playing') return
       const rng = rngNow()
+      evening = game
       const night = startNight(game, rng)
       commit(night, rng.state())
       set((st) => ({ ui: { ...st.ui, phoneOpen: false, kitabOpen: false, plotPanelId: null } }))
@@ -123,8 +129,9 @@ export const useGame = create<GameStore>((set, get) => {
       const reason = canResolve(game, optionId)
       if (reason !== null) return reason
       const rng = rngNow()
+      const cardId = game.pendingCard
       commit(resolveCard(game, optionId, rng), rng.state())
-      endNight()
+      endNight(cardId ? { id: cardId, optionId } : null)
       return null
     },
     wake: () => {

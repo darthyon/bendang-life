@@ -5,6 +5,8 @@ import { MoonIcon } from '../icons'
 /** Ends the day from anywhere (spec §4.2). Z does the same. */
 export function TidurButton() {
   const sleep = useGame((s) => s.sleep)
+  const playing = useGame((s) => s.game.phase === 'playing')
+  if (!playing) return null
   return (
     <button type="button" className="panel tidur" onClick={sleep}>
       <MoonIcon size={22} className="tidur__icon" />

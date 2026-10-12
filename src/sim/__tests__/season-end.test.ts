@@ -55,6 +55,17 @@ describe('day recap', () => {
     expect(p?.healthTo).toBe(plot(after, 1).health)
   })
 
+  it('starts from the evening so a night card change shows', () => {
+    const evening = { ...plantedState(5, { waterCm: 5 }), pendingCard: 'hujan_lebat' }
+    const resolved = resolveCard(evening, 'biar', createRng(1))
+    const recap = buildRecap(evening, advanceDay(resolved, createRng(1)), {
+      id: 'hujan_lebat',
+      optionId: 'biar',
+    })
+    expect(recap.plots[0]).toMatchObject({ waterFrom: 5, waterTo: 8 })
+    expect(recap.card).toEqual({ id: 'hujan_lebat', optionId: 'biar' })
+  })
+
   it('sums money in and out today', () => {
     let s = applyAction(freshState(), { type: 'BUY_BAJA' })
     s = applyAction(s, { type: 'BUY_BENIH', variety: 'mr297' })

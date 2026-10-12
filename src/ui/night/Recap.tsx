@@ -1,4 +1,5 @@
 import { t } from '../../i18n'
+import { DECLINE } from '../../sim/events'
 import type { Recap as RecapData } from '../../sim/recap'
 import { useGame } from '../../state/store'
 import { formatRm } from '../format'
@@ -16,7 +17,19 @@ export function Recap({ recap }: { recap: RecapData }) {
         {t('night.recap_title')}
       </h2>
 
-      {quiet && <p className="recap__quiet">{t('night.quiet')}</p>}
+      {recap.card && (
+        <p className="recap__card">
+          {t('night.recap_card', {
+            card: t(`events.${recap.card.id}.title`),
+            choice:
+              recap.card.optionId === DECLINE
+                ? t('night.decline_all')
+                : t(`events.${recap.card.id}.${recap.card.optionId}`),
+          })}
+        </p>
+      )}
+
+      {quiet && !recap.card && <p className="recap__quiet">{t('night.quiet')}</p>}
 
       {recap.plots.map((p) => {
         const lost = p.healthTo < p.healthFrom

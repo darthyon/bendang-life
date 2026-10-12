@@ -184,6 +184,7 @@ bank:
   repay_all: "Langsai semua"  # TODO proofread
 
 night:
+  recap_card: "Malam ni: {card} — {choice}"  # TODO proofread
   recap_title: "Malam ni"  # TODO proofread
   recap_water: "Ayaq {from} → {to} cm"  # TODO proofread
   recap_gate_open: "pintu {gate} bukak"  # TODO proofread

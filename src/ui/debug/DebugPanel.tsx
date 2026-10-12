@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { t } from '../../i18n'
 import { waterTarget, stageForDay } from '../../sim/calendar'
-import { DECLINE, findCard } from '../../sim/events'
+import { CARDS, DECLINE, findCard } from '../../sim/events'
 import { RULES, VARIETY_LIST } from '../../sim/rules'
 import type { Action, GameState, Plot, PlotStatus, VarietyId } from '../../sim/types'
 import { useGame } from '../../state/store'
@@ -111,6 +111,7 @@ export default function DebugPanel() {
   const [jumpTo, setJumpTo] = useState(19)
   const [loanAmount, setLoanAmount] = useState(500)
   const [variety, setVariety] = useState<VarietyId>('mr297')
+  const [cardId, setCardId] = useState(CARDS[0]?.id ?? '')
   const [drawCalls, setDrawCalls] = useState(0)
   const { game, dispatch, debugSet } = useGame()
 
@@ -179,6 +180,29 @@ export default function DebugPanel() {
           Jump
         </Btn>
         <Btn onClick={() => debugSet({ ...game, hour: RULES.clock.dayStartHour })}>Reset hours</Btn>
+      </div>
+
+      <h3 style={S.h}>Night card</h3>
+      <div style={S.row}>
+        <select
+          style={{ ...S.input, width: 150 }}
+          value={cardId}
+          onChange={(e) => setCardId(e.target.value)}
+        >
+          {CARDS.map((c) => (
+            <option key={c.id}>{c.id}</option>
+          ))}
+        </select>
+        <Btn
+          onClick={() => {
+            // Force this card tonight and start the night (the deck's own rules are skipped).
+            debugSet({ ...game, pendingCard: cardId })
+            useGame.getState().sleep()
+            setOpen(false)
+          }}
+        >
+          Sleep with card
+        </Btn>
       </div>
 
       <h3 style={S.h}>Money and orders</h3>
