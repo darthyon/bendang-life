@@ -4,7 +4,7 @@ import type { CardOption, Effect } from '../../sim/events'
 const signed = (n: number) => (n > 0 ? `+${n}` : `${n}`)
 
 /** Short labels for what an option costs and does, e.g. "−RM80", "+4 cm water". */
-export function describeEffect(effect: Effect): string[] {
+export function describeEffect(effect: Effect, liveOpen: boolean): string[] {
   switch (effect.type) {
     case 'water_cm':
       return [t('night.effect_water', { cm: signed(effect.value) })]
@@ -21,7 +21,7 @@ export function describeEffect(effect: Effect): string[] {
     case 'chance':
       return [
         `${t('night.effect_chance', { n: Math.round(effect.value * 100) })} ${effect.then
-          .flatMap(describeEffect)
+          .flatMap((e) => describeEffect(e, liveOpen))
           .join(', ')}`,
       ]
     case 'unlock_fact':
@@ -30,10 +30,12 @@ export function describeEffect(effect: Effect): string[] {
     case 'item':
       return [t('night.effect_baja', { n: effect.count })]
     case 'followers':
+      // Before Live opens a "needs_live" gain does nothing, so it is not shown.
+      return effect.needsLive && !liveOpen ? [] : [t('night.effect_followers', { n: effect.value })]
     case 'fish':
+      return [t('night.effect_fish', { n: effect.count, fish: t(`fishing.${effect.fish}`) })]
     case 'fish_price_multiplier':
-      // Live and fishing arrive in M5; these gains do nothing yet, so they are not shown.
-      return []
+      return [t('night.effect_fish_price', { n: effect.value })]
   }
 }
 
@@ -44,6 +46,6 @@ export function describeCost(option: CardOption): string[] {
   if (cost.hoursTomorrow) parts.push(t('night.cost_hours_tomorrow', { h: cost.hoursTomorrow }))
   if (cost.hoursPerDay)
     parts.push(t('night.cost_hours_days', { h: cost.hoursPerDay, n: cost.days ?? 1 }))
-  if (cost.items?.baja_bag) parts.push(t('night.effect_baja', { n: -cost.items.baja_bag }))
+  if (cost.items?.baja_bag) parts.push(t('night.cost_baja', { n: cost.items.baja_bag }))
   return parts
 }

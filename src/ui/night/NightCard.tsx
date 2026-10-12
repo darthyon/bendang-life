@@ -1,6 +1,7 @@
 import { useState, type ComponentType } from 'react'
 import { t } from '../../i18n'
 import { cardOptions, DECLINE, findCard, RAYA_GUARD } from '../../sim/events'
+import { liveUnlocked } from '../../sim/live'
 import { useGame } from '../../state/store'
 import {
   BookIcon,
@@ -63,7 +64,7 @@ export function NightCard() {
       <div className="card__options">
         {cardOptions(game, card).map((option) => {
           const costs = describeCost(option)
-          const effects = option.effects.flatMap(describeEffect)
+          const effects = option.effects.flatMap((e) => describeEffect(e, liveUnlocked(game)))
           return (
             <button
               key={option.id}

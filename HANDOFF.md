@@ -1,22 +1,24 @@
 # Handoff
 
 ## State
-- M0–M3 on `main` (darthyon/bendang-life, private). M4 (night and season end) done on `m4-night`, not merged.
-- M4 sim: `events.ts` (deck, one card a night from night 2, every 2–3 nights, stage filter, no two Bala in a row, timed effects), `facts.ts` (unlock triggers), `recap.ts` (night recap), `season.ts` (season end, report, verdict, Musim Baru, Balik KL), `kitab.ts` (Buka tab).
-- M4 UI: night scene (card, then recap, then morning), Kitab (rail + Tanya Kitab), season report with Tok Wan at the door, choice, ending card. Night mood switches the world lighting.
-- 115 tests; typecheck, lint, test, build pass. Debug panel Sleep/Jump play through nights (free option or decline).
+- M0–M4 on `main` (darthyon/bendang-life, private). M5 (side income and Raya) on `m5-side`, not merged.
+- M5 sim: `fishing.ts` (pancing at the longkang, serkap on drained plots, catches per spot per day, Jual Ikan value), `live.ts` (unlock day 8, pay by followers, bonuses), Raya arrival + guard option in `events.ts`, story moments (`moments` queue, `ACK_MOMENT`), Kucing Oren / Pasar Malam back in the deck.
+- M5 UI: fishing minigame (`src/ui/fishing/`), Q for serkap with a two-line prompt, fish pill, Jual Ikan and Live phone apps, moment cards (Live intro, Raya arrival), Raya following with idle lines (`src/scene/Raya.tsx`), guard outcome in the recap.
+- 135 tests; typecheck, lint, test, build pass. Debug panel has "Sleep with card" to force any night card.
 
 ## Next
-- M5: fishing (pancing, serkap), Jual Ikan, Live (day 8), Raya (day 14). Add Kucing Oren and Pasar Malam back to the deck (they are filtered by `NOT_YET` in `events.ts`), Raya's free option on Tikus Malam, followers from Kenduri.
+- M6 Front door: start screen, intro (3 cards), onboarding (character, name, ready), Tok Wan's welcome, starter seed cards, tutorial, autosave.
 
 ## Decisions
-- One card a night (owner). `cards_per_draw` in rules.yaml is unused.
-- Night order: card first, then the recap, so the recap includes the card's effects. Recap added to spec §4.2.
-- Season end: morning after day 20 if nothing is growing; otherwise continues to `season.last_day` (24), then unharvested plots are lost. `season.verdict_margin` (100) for Tok's verdict. Both added to rules.yaml.
-- Report shows a neutral "net" line with a signed amount so it never contradicts the verdict.
-- Musim Baru keeps coins, loan (interest resets), bags, Kitab facts; plots reset per `plots_by_season`.
+- Q does serkap (owner); added to AGENTS.md Controls. Touch gets a second button in M8.
+- Fishing: a miss still costs the hour; only catches count against the spot's daily limit. The green zone's position is visual only (not sim RNG).
+- Live pays on followers before the stream; viewers shown = followers after.
+- Raya's idle line timer counts real time only while the player is moving.
+- Phone and Kitab mount their contents only while open, so they reopen on their first screen.
+- Earlier decisions (M2–M4) still hold; see git history and spec §4.2.
 
 ## Open questions for the owner
-- `tasks.yaml`: `bajak` only appears on day 1 (`day_at_most: 1`); a player who skips day 1 gets no plough task. `naik_air`/`kering` tick only after water changes overnight.
-- Water balance: day-2 band unreachable until day 4 (see `health.test.ts`).
-- Kedah drafts marked `# TODO proofread` (recap, card effects, report lines, phone no-signal).
+- `tasks.yaml`: plough task only on day 1; water tasks tick only after the overnight change.
+- Water balance: day-2 band unreachable until day 4 (`health.test.ts`).
+- Raya is often hidden behind the player and prompt while following (grey-box; revisit with M7 models).
+- Kedah drafts marked `# TODO proofread`.

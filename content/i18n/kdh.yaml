@@ -187,6 +187,10 @@ bank:
   repay_all: "Langsai semua"  # TODO proofread
 
 night:
+  effect_fish: "+{n} {fish}"  # TODO proofread
+  effect_followers: "+{n} pengikut"  # TODO proofread
+  cost_baja: "−{n} guni baja"  # TODO proofread
+  effect_fish_price: "Esok ikan laku ×{n}"  # TODO proofread
   recap_card: "Malam ni: {card} — {choice}"  # TODO proofread
   recap_title: "Malam ni"  # TODO proofread
   recap_water: "Ayaq {from} → {to} cm"  # TODO proofread

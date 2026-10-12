@@ -182,6 +182,10 @@ bank:
   repay_all: "Repay everything"
 
 night:
+  effect_fish: "+{n} {fish}"
+  effect_followers: "+{n} followers"
+  cost_baja: "−{n} fertiliser bag"
+  effect_fish_price: "Fish sell for ×{n} tomorrow"
   recap_card: "Tonight: {card} — {choice}"
   recap_title: "Tonight"
   recap_water: "Water {from} → {to} cm"

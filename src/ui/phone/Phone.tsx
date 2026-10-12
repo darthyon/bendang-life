@@ -21,15 +21,25 @@ type App = 'home' | 'kedai' | 'bank' | 'jual' | 'live'
 const LOAN_STEP = 100
 
 /** Phone (F). Pauses the game while open (spec §4.6). */
+const TITLES: Record<App, string> = {
+  home: 'phone.title',
+  kedai: 'phone.app_kedai',
+  bank: 'phone.app_bank',
+  jual: 'phone.app_jual',
+  live: 'phone.app_live',
+}
+
 export function Phone() {
   const open = useGame((s) => s.ui.phoneOpen)
+  // Mounted only while open, so the phone always opens on its home screen.
+  return open ? <PhoneBody /> : null
+}
+
+function PhoneBody() {
   const setPhone = useGame((s) => s.setPhone)
   const [app, setApp] = useState<App>('home')
   const phoneOffDays = useGame((s) => s.game.phoneOffDays)
-  if (!open) return null
-
-  const title =
-    app === 'kedai' ? 'phone.app_kedai' : app === 'bank' ? 'phone.app_bank' : 'phone.title'
+  const title = TITLES[app]
 
   return (
     <div className="phone-layer" onClick={() => setPhone(false)}>
