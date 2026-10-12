@@ -59,11 +59,20 @@ function plotReason(state: GameState, action: PlotAction): ReasonKey | null {
   }
 }
 
+// Reasons that mean the job does not apply here at all; they win over running out of time.
+const NOT_APPLICABLE: ReasonKey[] = ['reasons.not_now', 'stages.locked', 'reasons.not_ripe']
+
 export function canApply(state: GameState, action: Action): ReasonKey | null {
+  const reason = baseReason(state, action)
+  if (reason && NOT_APPLICABLE.includes(reason)) return reason
   const job = JOB_OF[action.type]
   if (job && state.hour + RULES.jobHours[job] > RULES.clock.nightStartHour) {
     return 'toasts.no_time'
   }
+  return reason
+}
+
+function baseReason(state: GameState, action: Action): ReasonKey | null {
   switch (action.type) {
     case 'TOGGLE_GATE':
       return null

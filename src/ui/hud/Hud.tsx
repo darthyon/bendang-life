@@ -1,3 +1,5 @@
+import { PlotPanel } from '../panels/PlotPanel'
+import { Phone } from '../phone/Phone'
 import { LeftRail } from './LeftRail'
 import { PlayerCard } from './PlayerCard'
 import { StatPills } from './StatPills'
@@ -15,7 +17,9 @@ export function Hud() {
       </div>
       <StatPills />
       <TidurButton />
+      <PlotPanel />
       <Toasts />
+      <Phone />
       <WakeFade />
     </div>
   )

@@ -11,6 +11,7 @@ import { GATES, PLAYER_START, PLOTS, TARGETS } from './layout'
 import { Lighting } from './Lighting'
 import { Player } from './Player'
 import { Plot } from './Plot'
+import { ProblemIcons } from './ProblemIcons'
 import { Prompt } from './Prompt'
 import { Cottage } from './Props/Cottage'
 import { Gate } from './Props/Gate'
@@ -76,6 +77,7 @@ export function World() {
       ))}
       <Longkang />
       <Cottage />
+      <ProblemIcons />
       <Player position={player} />
       <Prompt job={job} blocked={blocked} focus={player} />
     </>

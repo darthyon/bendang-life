@@ -38,6 +38,12 @@ describe('jobs', () => {
     expect(applyAction(s, { type: 'BAJAK', plotId: 1 })).toBe(s)
   })
 
+  it('reports a job that does not apply before running out of time', () => {
+    const s = freshState({ hour: RULES.clock.nightStartHour - 0.5 })
+    expect(canApply(s, { type: 'TUAI', plotId: 1 })).toBe('reasons.not_now')
+    expect(canApply(s, { type: 'BAJAK', plotId: 2 })).toBe('stages.locked')
+  })
+
   it('applies baja only inside a stage window and uses a bag', () => {
     const [first = 0] = RULES.fertiliser.stageDays
     const early = plantedState(first - 1, {})

@@ -434,3 +434,665 @@ button {
     animation-duration: 1ms;
   }
 }
+
+/* ---------- Shared controls ---------- */
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 9px;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.06);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease-out,
+    color 160ms ease-out;
+}
+
+.icon-btn:hover {
+  background: rgb(255 255 255 / 0.12);
+  color: var(--text);
+}
+
+.icon-btn--ghost {
+  visibility: hidden;
+}
+
+.btn {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 12px;
+  background: var(--panel-raised);
+  font: 800 15px/1.1 var(--font-body);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease-out,
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn:hover {
+  background: #3a464d;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  border-color: transparent;
+  background: var(--leaf-strong);
+  color: var(--leaf-ink);
+}
+
+.btn--primary:hover {
+  background: #d4eeb4;
+}
+
+.btn--quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn--quiet:hover {
+  background: transparent;
+  color: var(--text);
+}
+
+.chip {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  color: var(--text-soft);
+  font: 700 12px/1.3 var(--font-body);
+}
+
+.chip--planted {
+  background: rgb(166 210 124 / 0.16);
+  color: var(--leaf-strong);
+}
+
+.chip--harvested {
+  background: rgb(242 197 75 / 0.16);
+  color: var(--coin);
+}
+
+.meter {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  overflow: hidden;
+}
+
+.meter__fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.meter__fill--water {
+  background: var(--water);
+}
+.meter__fill--leaf {
+  background: var(--leaf);
+}
+.meter__fill--danger {
+  background: var(--danger);
+}
+
+/* ---------- Plot panel ---------- */
+
+.plot-panel {
+  position: absolute;
+  left: calc(var(--edge) + min(300px, 34vw) + var(--gap));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(340px, 42vw);
+  max-height: calc(100vh - 2 * var(--edge));
+  overflow-y: auto;
+  padding: 16px 18px 18px;
+  animation: panel-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.plot-panel__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.plot-panel__title {
+  margin: 0;
+  font: 700 22px/1.1 var(--font-display);
+}
+
+.plot-panel__note {
+  margin: 0;
+  color: var(--text-soft);
+  font: 600 14px/1.45 var(--font-body);
+}
+
+.facts {
+  margin: 0;
+}
+
+.facts__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font: 600 14px/1.3 var(--font-body);
+}
+
+.facts dt {
+  color: var(--text-soft);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 14px/1.2 var(--font-body);
+}
+
+.stat__icon {
+  flex: none;
+  color: var(--text-soft);
+}
+.stat__icon--water {
+  color: var(--water);
+}
+.stat__icon--sack {
+  color: var(--sack);
+}
+
+.stat__value {
+  margin-left: auto;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.stat__value--water_low,
+.stat__value--water_high {
+  color: var(--warn);
+}
+.stat__value--water_ok {
+  color: var(--leaf-strong);
+}
+
+.stat__note {
+  color: var(--text-dim);
+  font: 600 12.5px/1.3 var(--font-body);
+}
+
+.stat__note.is-due {
+  color: var(--warn);
+}
+
+.pests {
+  display: flex;
+  gap: 16px;
+  font: 700 14px/1.2 var(--font-body);
+  color: var(--text-soft);
+}
+
+.pests__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--panel-edge);
+  list-style: none;
+}
+
+.jobs__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-small);
+  background: rgb(255 255 255 / 0.04);
+  font: 700 14px/1.2 var(--font-body);
+}
+
+.jobs__item.is-next {
+  background: rgb(166 210 124 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(166 210 124 / 0.45);
+}
+
+.jobs__hours {
+  margin-left: auto;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.jobs__reason {
+  flex-basis: 100%;
+  color: var(--warn);
+  font: 600 12.5px/1.3 var(--font-body);
+}
+
+/* ---------- Phone ---------- */
+
+.phone-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: rgb(14 20 18 / 0.45);
+  pointer-events: auto;
+  animation: fade-in 200ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.phone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(360px, 92vw);
+  height: min(640px, calc(100vh - 24px));
+  padding: 26px 14px 14px;
+  border-radius: 34px;
+  background: #11171a;
+  border: 3px solid #39444a;
+  box-shadow:
+    0 24px 60px rgb(0 0 0 / 0.45),
+    0 2px 6px rgb(0 0 0 / 0.3);
+  animation: phone-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes phone-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+
+.phone__notch {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 76px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2b3438;
+  transform: translateX(-50%);
+}
+
+.phone__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px 10px;
+}
+
+.phone__title {
+  margin: 0;
+  font: 700 18px/1.2 var(--font-display);
+}
+
+.phone__screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: 22px;
+  background: var(--panel-solid);
+  scrollbar-width: thin;
+  scrollbar-color: #4b575d transparent;
+}
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.app-tile {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  font: 700 13px/1.2 var(--font-body);
+  cursor: pointer;
+  transition: background-color 160ms ease-out;
+}
+
+.app-tile:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+
+.app-tile__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.25);
+}
+
+.app-tile__icon--kedai {
+  background: linear-gradient(160deg, #b7dc8f, #7fae5a);
+  color: var(--leaf-ink);
+}
+
+.app-tile__icon--bank {
+  background: linear-gradient(160deg, #f2c54b, #d69a2c);
+  color: #3a2a0a;
+}
+
+.shop__heading {
+  margin: 4px 0 8px;
+  font: 700 14px/1.2 var(--font-display);
+  color: var(--text-soft);
+}
+
+.shop__heading + .shop__list {
+  margin-bottom: 14px;
+}
+
+.shop__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.04);
+}
+
+.item__icon--leaf {
+  color: var(--leaf);
+}
+.item__icon--sack {
+  color: var(--sack);
+}
+
+.item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item__name {
+  font: 800 14px/1.2 var(--font-body);
+}
+
+.item__desc {
+  color: var(--text-soft);
+  font: 600 12px/1.35 var(--font-body);
+}
+
+.item__owned {
+  color: var(--text-dim);
+  font: 700 12px/1.3 var(--font-body);
+}
+
+.buy {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--leaf-strong);
+  color: var(--leaf-ink);
+  font: 800 14px/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 160ms ease-out;
+}
+
+.buy:hover {
+  background: #d4eeb4;
+}
+
+.buy[aria-disabled='true'] {
+  background: rgb(255 255 255 / 0.1);
+  color: var(--text-dim);
+}
+
+.bank {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bank__balance {
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgb(242 197 75 / 0.18), rgb(242 197 75 / 0.06));
+}
+
+.bank__label {
+  font: 800 17px/1.3 var(--font-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.bank__body {
+  margin: 0;
+  color: var(--text-soft);
+  font: 600 13px/1.45 var(--font-body);
+}
+
+.bank__action {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--panel-edge);
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.05);
+}
+
+.stepper__btn {
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font: 800 20px/1 var(--font-body);
+  cursor: pointer;
+}
+
+.stepper__btn:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.stepper__btn:disabled {
+  color: var(--text-dim);
+  cursor: default;
+}
+
+.stepper__value {
+  text-align: center;
+  font: 800 17px/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Problem icons (world space) ---------- */
+
+.problem {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--panel-solid);
+  color: var(--warn);
+  box-shadow:
+    var(--shadow),
+    inset 0 0 0 2px currentColor;
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+.problem--water_low,
+.problem--water_high {
+  color: var(--water);
+}
+.problem--ripe {
+  color: var(--coin);
+}
+.problem--baja {
+  color: var(--sack);
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .problem,
+  .phone,
+  .phone-layer,
+  .plot-panel {
+    animation: none;
+  }
+}
+
+/* ---------- Short landscape screens (phones) ---------- */
+
+@media (max-height: 520px) {
+  :root {
+    --gap: 8px;
+    --edge: max(10px, env(safe-area-inset-left));
+  }
+
+  .hud__left {
+    width: min(250px, 30vw);
+  }
+
+  .player {
+    padding: 6px 12px 6px 6px;
+    gap: 10px;
+  }
+
+  .player__avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player__name {
+    font-size: 16px;
+  }
+
+  .tasks {
+    padding: 10px 12px;
+  }
+
+  .tasks__list {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .tasks__item {
+    font-size: 13px;
+  }
+
+  .rail__item {
+    width: 64px;
+    padding: 9px 4px 7px;
+  }
+
+  .pill {
+    min-height: 40px;
+    padding: 6px 12px 6px 10px;
+    font-size: 15px;
+  }
+
+  .pill__lines {
+    font-size: 12.5px;
+  }
+
+  .tidur {
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 15px;
+  }
+
+  /* The plot panel moves right, between the pills and Tidur, so it never hides the stats. */
+  .plot-panel {
+    left: auto;
+    right: var(--edge);
+    top: calc(var(--edge) + 48px + var(--gap));
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 44px + var(--gap));
+    width: min(300px, 38vw);
+    max-height: none;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .plot-panel__title {
+    font-size: 19px;
+  }
+
+  .phone {
+    height: calc(100vh - 16px);
+    padding-top: 22px;
+  }
+}

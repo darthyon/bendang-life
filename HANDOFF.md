@@ -1,20 +1,21 @@
 # Handoff
 
 ## State
-- M0, M1 merged to `main` and pushed (darthyon/bendang-life, private).
-- M2 (simulation core) done on branch `m2-sim`, not merged: `src/sim/` (types, rules loader, rng, calendar, actions, day, harvest, selectors, state), `src/state/store.ts`, E runs `primaryJob`, dev-only debug panel (backtick) in `src/ui/debug/`.
-- 59 tests; typecheck, lint, test, build pass. A full season plays from the debug panel.
+- M0–M2 on `main` (darthyon/bendang-life, private). M3 (Day HUD) done on `m3-hud`, not merged.
+- M3: running clock (5 s per game hour, quarter-hour steps, pauses with the phone), 7 PM auto day end, Z/F/Tab/Esc, Tugas Hari Ini from `content/tasks.yaml` (`src/sim/tasks.ts`), plot problems + world icons, HUD (`src/ui/hud/`), plot panel (`src/ui/panels/`), phone with Kedai Tani and Agribank (`src/ui/phone/`), toasts, wake fade. Fonts: Nunito + Grandstander (latin subsets).
+- 75 tests; typecheck, lint, test, build pass. Debug panel still on backtick (dev only).
 
 ## Next
-- M3 Day HUD: real-time clock (5 s per game hour, pauses), Tidur (Z / moon), stat pills, Tugas Hari Ini (`content/tasks.yaml`), plot panel (Tab / click), problem icons, phone with Kedai Tani and Agribank.
+- M4 Night and season end: night cards (`content/events.yaml`), Kitab (left rail + Tanya Kitab in plot panel), season report, Tok Wan's verdict, stay or balik KL.
 
-## Decisions (M2, approved in plan)
-- Loan: 2% charged once, on the balance at the first harvest; each harvest repays the loan first; the rest rolls over.
-- Tuai allowed from day 17 (early factor 0.8); ideal days 19 to 18 + variety window; days continue past 20 until M4.
-- One rumpai/siput job clears one patch. Health checks the day's band before the overnight water change. Locked plots ignore gates.
-- Debug panel labels are English and not in i18n (dev-only, excluded from the build).
-- `reasons.*` strings added; Kedah drafts marked `# TODO proofread`.
+## Decisions
+- No PRODUCT.md/DESIGN.md: spec + refs are the design authority (owner's choice). UI tokens live in `src/styles.css` `:root`.
+- Player card shows `hud.player_placeholder` until M6. Left rail and phone show only built features (Fon; Kedai Tani, Agribank).
+- Plot panel is information only; jobs are done with E. On short screens (≤520 px high) it sits on the right.
+- A finished task stays ticked for the day (`TaskRef.done`). `canApply` reports "doesn't apply here" before "no time".
+- M2 decisions still hold (loan interest once at first harvest; tuai from day 17; one patch per job).
 
-## Blockers / open questions for the owner
-- Balance: a plot sown day 1 can't reach the day-2 band (5–7 cm) until day 4 at +2 cm/day, so every player loses ~12 health. Recorded in `health.test.ts`; numbers unchanged.
-- fiber 8 / drei 9 log a `THREE.Clock` deprecation with three 0.186; harmless so far.
+## Open questions for the owner
+- `naik_air` / `kering` tasks complete only when water is in the band, which changes overnight, so they never tick on the day they appear.
+- Water balance: day-2 band unreachable until day 4 (see `health.test.ts`).
+- Kedah drafts marked `# TODO proofread` (reasons, HUD placeholder, AM/PM).
