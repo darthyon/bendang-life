@@ -27,6 +27,7 @@ function gateFor(plotId: number): GateId | null {
 }
 
 function overnightWater(plot: Plot, gates: GameState['gates']): number {
+  if (plot.status === 'locked') return plot.waterCm
   const gate = gateFor(plot.id)
   const open = gate !== null && gates[gate]
   const next = open

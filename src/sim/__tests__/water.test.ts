@@ -14,7 +14,10 @@ describe('water', () => {
     expect(s.gates.A).toBe(true)
     expect(s.hour).toBe(RULES.clock.dayStartHour + RULES.jobHours.pintu_air)
     s = advanceDay(s, rng())
-    for (const id of RULES.water.gates.A) expect(plot(s, id).waterCm).toBe(gain)
+    for (const id of RULES.water.gates.A) {
+      if (plot(s, id).status !== 'locked') expect(plot(s, id).waterCm).toBe(gain)
+    }
+    expect(plot(s, 1).waterCm).toBe(gain)
     for (const id of RULES.water.gates.B) expect(plot(s, id).waterCm).toBe(0)
   })
 
@@ -31,6 +34,12 @@ describe('water', () => {
     let s = withPlot(freshState({ gates: { A: true, B: false } }), 1, { waterCm: capCm - 1 })
     s = advanceDay(s, rng())
     expect(plot(s, 1).waterCm).toBe(capCm)
+  })
+
+  it('leaves locked plots dry', () => {
+    const s = advanceDay(freshState({ gates: { A: true, B: true } }), rng())
+    expect(plot(s, 2).status).toBe('locked')
+    expect(plot(s, 2).waterCm).toBe(0)
   })
 
   it('closes the gate on a second toggle', () => {
