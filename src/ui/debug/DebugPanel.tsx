@@ -81,6 +81,13 @@ function NumField({
   )
 }
 
+/** 18.5 -> "18:30". */
+function formatHour(hour: number): string {
+  const h = Math.floor(hour)
+  const m = Math.round((hour - h) * 60)
+  return `${h}:${String(m).padStart(2, '0')}`
+}
+
 function patchPlot(game: GameState, id: number, patch: Partial<Plot>): GameState {
   return { ...game, plots: game.plots.map((p) => (p.id === id ? { ...p, ...patch } : p)) }
 }
@@ -122,7 +129,8 @@ export default function DebugPanel() {
       <div style={S.row}>
         <strong>Debug</strong>
         <span>
-          · season {game.season} · day {game.day} · {game.hour}:00 · {stageForDay(game.day)}
+          · season {game.season} · day {game.day} · {formatHour(game.hour)} ·{' '}
+          {stageForDay(game.day)}
         </span>
       </div>
       <div style={S.row}>
