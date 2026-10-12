@@ -2,18 +2,20 @@ import { Html } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef, type RefObject } from 'react'
 import type { Group, Vector3 } from 'three'
-import type { Target } from '../input/interactions'
+import type { Job } from '../sim/selectors'
 import { t } from '../i18n'
 
-// M1: one static label per target kind. M2 derives the label from game state.
-const LABEL: Record<Target['kind'], string> = {
-  plot: 'actions.bajak',
-  gate: 'actions.gate_open',
-  longkang: 'actions.pancing',
-}
-
 /** Context prompt floating above the player's head. */
-export function Prompt({ target, focus }: { target: Target | null; focus: RefObject<Vector3> }) {
+export function Prompt({
+  job,
+  blocked,
+  focus,
+}: {
+  job: Job | null
+  /** Reason shown after a refused E press. */
+  blocked: string | null
+  focus: RefObject<Vector3>
+}) {
   const group = useRef<Group>(null)
 
   useFrame(() => {
@@ -23,11 +25,12 @@ export function Prompt({ target, focus }: { target: Target | null; focus: RefObj
 
   return (
     <group ref={group}>
-      {target && (
+      {job && (
         <Html center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
           <div className="prompt" role="status">
-            <kbd className="prompt__key">E</kbd>
-            <span>{t(LABEL[target.kind])}</span>
+            {job.action && <kbd className="prompt__key">E</kbd>}
+            <span>{t(job.labelKey)}</span>
+            {blocked && <span className="prompt__reason">{t(blocked)}</span>}
           </div>
         </Html>
       )}
