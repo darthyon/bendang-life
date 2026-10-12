@@ -4,7 +4,7 @@ import { Vector3 } from 'three'
 import { attachKeyboard } from '../input/keyboard'
 import { findTarget, type Target } from '../input/interactions'
 import { primaryJob } from '../sim/selectors'
-import { useGame } from '../state/store'
+import { isPaused, useGame } from '../state/store'
 import { CameraRig } from './CameraRig'
 import { Island } from './Island'
 import { GATES, PLAYER_START, PLOTS, TARGETS } from './layout'
@@ -26,12 +26,13 @@ export function World() {
   const [blocked, setBlocked] = useState<string | null>(null)
   const targetRef = useRef<Target | null>(null)
   const game = useGame((s) => s.game)
+  const setPlotPanel = useGame((s) => s.setPlotPanel)
   const job = target ? primaryJob(game, target) : null
 
   useEffect(() => {
     let timer: number | undefined
     const detach = attachKeyboard((code) => {
-      if (!INTERACT_KEYS.includes(code)) return
+      if (!INTERACT_KEYS.includes(code) || isPaused()) return
       const current = targetRef.current
       if (!current) return
       const { game: now, dispatch } = useGame.getState()
@@ -54,6 +55,7 @@ export function World() {
       targetRef.current = next
       setTarget(next)
       setBlocked(null)
+      useGame.getState().setStandingPlot(next?.kind === 'plot' ? next.plotId : null)
     }
   })
 
@@ -65,7 +67,9 @@ export function World() {
       <Island />
       {PLOTS.map((p) => {
         const state = game.plots.find((g) => g.id === p.id)
-        return state ? <Plot key={p.id} rect={p.rect} plot={state} /> : null
+        return state ? (
+          <Plot key={p.id} rect={p.rect} plot={state} onSelect={() => setPlotPanel(p.id)} />
+        ) : null
       })}
       {GATES.map((g) => (
         <Gate key={g.id} x={g.x} z={g.z} open={game.gates[g.id]} />

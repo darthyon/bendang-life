@@ -2,6 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { useRef, type RefObject } from 'react'
 import { Vector3, type Group } from 'three'
 import { moveInput } from '../input/keyboard'
+import { isPaused } from '../state/store'
 import { inRect } from '../input/interactions'
 import { BLOCKERS, ISLAND, PLAYER_RADIUS } from './layout'
 import { PALETTE } from './palette'
@@ -27,6 +28,7 @@ export function Player({ position }: { position: RefObject<Vector3> }) {
     const p = position.current
     const g = group.current
     if (!p || !g) return
+    if (isPaused()) return
     const input = moveInput()
     if (input.x === 0 && input.y === 0) return
 

@@ -1,7 +1,9 @@
 import { Canvas } from '@react-three/fiber'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { PCFShadowMap } from 'three'
+import { attachControls } from './input/controls'
 import { World } from './scene/World'
+import { startClock } from './state/clock'
 import './styles.css'
 
 // Dev-only tools. `import.meta.env.DEV` is false in production, so these chunks are never built.
@@ -9,6 +11,15 @@ const DebugPanel = import.meta.env.DEV ? lazy(() => import('./ui/debug/DebugPane
 const DrawCallProbe = import.meta.env.DEV ? lazy(() => import('./ui/debug/DrawCallProbe')) : null
 
 export function App() {
+  useEffect(() => {
+    const stopClock = startClock()
+    const detachControls = attachControls()
+    return () => {
+      stopClock()
+      detachControls()
+    }
+  }, [])
+
   return (
     <>
       <Canvas
