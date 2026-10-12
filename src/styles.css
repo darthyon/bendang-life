@@ -1,0 +1,35 @@
+/* Slate HUD panel style from docs/refs. */
+:root {
+  --panel: rgb(38 48 56 / 0.92);
+  --panel-text: #f2efe6;
+  --key: #e8e1cf;
+  --key-text: #263038;
+}
+
+.prompt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--panel-text);
+  font:
+    600 14px/1.2 system-ui,
+    sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+}
+
+.prompt__key {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--key);
+  color: var(--key-text);
+  font:
+    700 13px/1 system-ui,
+    sans-serif;
+}

@@ -1,0 +1,18 @@
+// Grey-box colours sampled from docs/refs/01-day-hud.png. Replaced by the shared palette at M7.
+export const PALETTE = {
+  sky: '#8a9f78',
+  sea: '#6f9c9a',
+  grass: '#7f9a52',
+  soil: '#8a6a45',
+  mud: '#6e5236',
+  path: '#b8956a',
+  bund: '#93a85c',
+  water: '#7fb6c4',
+  wood: '#8b6a4a',
+  roof: '#5f6670',
+  leaf: '#5f8a3a',
+  trunk: '#7a5a3c',
+  shirt: '#4c6a8a',
+  skin: '#d9a97c',
+  hat: '#e2c27a',
+} as const

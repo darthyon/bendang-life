@@ -18,3 +18,4 @@ assets/export/
 *.log
 .vite/
 coverage/
+.playwright-mcp/
