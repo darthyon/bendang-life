@@ -106,6 +106,8 @@ stages:
   harvested: "Lepaih tuai"
 
 plot_panel:
+  gate_open: "Pintu ayaq {gate} bukak · esok pagi {cm} cm"  # TODO proofread
+  gate_closed: "Pintu ayaq {gate} tutup · esok pagi {cm} cm"  # TODO proofread
   title: "Petak {n}"
   variety: "Benih"
   stage_day: "{stage} · hari ke-{day}"

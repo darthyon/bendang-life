@@ -101,6 +101,8 @@ stages:
   harvested: "Harvested"
 
 plot_panel:
+  gate_open: "Gate {gate} open · {cm} cm by morning"
+  gate_closed: "Gate {gate} closed · {cm} cm by morning"
   title: "Plot {n}"
   variety: "Variety"
   stage_day: "{stage} · day {day}"

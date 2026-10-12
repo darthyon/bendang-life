@@ -37,6 +37,21 @@ function overnightWater(plot: Plot, gates: GameState['gates']): number {
   return Math.min(RULES.water.capCm, Math.max(0, next))
 }
 
+export interface WaterForecast {
+  gateId: GateId
+  open: boolean
+  /** Water depth after tonight, from the gate as it is now. */
+  nextCm: number
+}
+
+/** Which gate feeds a plot and where its water will be tomorrow morning. Null for locked plots. */
+export function waterForecast(state: GameState, plotId: number): WaterForecast | null {
+  const plot = state.plots.find((p) => p.id === plotId)
+  const gateId = gateFor(plotId)
+  if (!plot || plot.status === 'locked' || gateId === null) return null
+  return { gateId, open: state.gates[gateId], nextCm: overnightWater(plot, state.gates) }
+}
+
 /** Weeds and snails appear on planted plots at the start of a day inside their windows. */
 function spawnPests(plot: Plot, day: number, rng: Rng): Pick<Plot, 'weeds' | 'snails'> {
   if (plot.status !== 'planted' || !plot.variety) return { weeds: plot.weeds, snails: plot.snails }

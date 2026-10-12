@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { applyAction } from '../actions'
-import { advanceDay } from '../day'
+import { advanceDay, waterForecast } from '../day'
 import { createRng } from '../rng'
 import { RULES } from '../rules'
 import { freshState, plot, withPlot } from './helpers'
@@ -46,5 +46,18 @@ describe('water', () => {
     let s = applyAction(freshState(), { type: 'TOGGLE_GATE', gateId: 'B' })
     s = applyAction(s, { type: 'TOGGLE_GATE', gateId: 'B' })
     expect(s.gates.B).toBe(false)
+  })
+})
+
+describe('overnight water forecast', () => {
+  it('names the gate feeding a plot and the change tonight', () => {
+    const closed = withPlot(freshState(), 1, { waterCm: 3 })
+    expect(waterForecast(closed, 1)).toEqual({ gateId: 'A', open: false, nextCm: 3 - loss })
+    const open = { ...closed, gates: { A: true, B: false } }
+    expect(waterForecast(open, 1)).toEqual({ gateId: 'A', open: true, nextCm: 3 + gain })
+  })
+
+  it('has no forecast for a locked plot', () => {
+    expect(waterForecast(freshState(), 2)).toBeNull()
   })
 })

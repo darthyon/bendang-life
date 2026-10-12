@@ -1,6 +1,7 @@
 import { t } from '../../i18n'
 import { canApply } from '../../sim/actions'
 import { bajaStageDue, stageForDay, waterTarget } from '../../sim/calendar'
+import { waterForecast } from '../../sim/day'
 import { RULES } from '../../sim/rules'
 import { primaryJob } from '../../sim/selectors'
 import type { Action, JobId } from '../../sim/types'
@@ -60,6 +61,7 @@ export function PlotPanel() {
   const nextBajaDay = RULES.fertiliser.stageDays.find(
     (day, i) => !plot.bajaDone[i] && day + RULES.fertiliser.windowDays > game.day,
   )
+  const forecast = waterForecast(game, plot.id)
   const waterState =
     plot.waterCm < band.min ? 'water_low' : plot.waterCm > band.max ? 'water_high' : 'water_ok'
 
@@ -133,6 +135,14 @@ export function PlotPanel() {
             <span className="stat__note">
               {t('plot_panel.water_target', { min: band.min, max: band.max })}
             </span>
+            {forecast && (
+              <span className={`stat__note stat__note--gate${forecast.open ? ' is-open' : ''}`}>
+                {t(forecast.open ? 'plot_panel.gate_open' : 'plot_panel.gate_closed', {
+                  gate: forecast.gateId,
+                  cm: forecast.nextCm,
+                })}
+              </span>
+            )}
           </div>
 
           <div className="stat">
