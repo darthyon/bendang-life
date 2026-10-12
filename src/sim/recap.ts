@@ -72,7 +72,7 @@ export function buildRecap(before: GameState, after: GameState, card: Recap['car
     day: before.day,
     card,
     plots,
-    money: { ...before.today },
+    money: { earned: before.today.earned, spent: before.today.spent },
     tomorrow: taskStatus(after).filter((t) => !t.done),
   }
 }

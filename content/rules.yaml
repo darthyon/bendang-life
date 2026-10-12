@@ -99,6 +99,7 @@ fishing:
     longkang: { method: pancing, fish: [haruan, puyu, sepat, tilapia], catches_per_day: 3 }
     plot_drained: { method: serkap, fish: [keli, haruan], catches_per_day: 2,
                     available_when: [before_bajak, masak, sedia_tuai, after_harvest] }
+  needle_seconds: 1.4            # tuning: time for the needle to cross the bar once
   # Minigame: green zone width as a share of the bar. Prices are tuning.
   fish:
     keli:    { zone: 0.18, price: 9 }

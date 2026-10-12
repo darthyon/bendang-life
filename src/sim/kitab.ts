@@ -1,16 +1,13 @@
 // The Kitab's "Buka" tab: what has opened and what's next (spec §4.10).
 import { RULES } from './rules'
 import type { GameState } from './types'
+import { reached } from './unlocks'
 
 export interface KitabUnlock {
   key: 'live' | 'raya' | 'plot_2' | 'plot_3_4'
   unlocked: boolean
   /** Shown while locked: the day or the season it opens. */
   hint: { day: number } | { season: number }
-}
-
-function reached(state: GameState, at: { season: number; day: number }): boolean {
-  return state.season > at.season || (state.season === at.season && state.day >= at.day)
 }
 
 function seasonOpening(plotId: number): number {

@@ -75,7 +75,7 @@ describe('day recap', () => {
 
   it('starts each day with a clean money count', () => {
     const s = advanceDay(applyAction(freshState(), { type: 'BUY_BAJA' }), createRng(1))
-    expect(s.today).toEqual({ earned: 0, spent: 0 })
+    expect(s.today).toMatchObject({ earned: 0, spent: 0 })
   })
 })
 

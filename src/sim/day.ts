@@ -3,7 +3,10 @@ import type { Rng } from './rng'
 import { RULES, VARIETIES } from './rules'
 import { unlockBy } from './facts'
 import { refreshTasks } from './tasks'
-import type { GameState, GateId, Plot, TimedEffect } from './types'
+import { liveUnlocked } from './live'
+import { EMPTY_TODAY } from './state'
+import type { GameState, GateId, Moment, Plot, TimedEffect } from './types'
+import { reached } from './unlocks'
 
 function inWindow(day: number, w: { fromDay: number; toDay: number }): boolean {
   return day >= w.fromDay && day <= w.toDay
@@ -108,9 +111,22 @@ export function advanceDay(state: GameState, rng: Rng): GameState {
       hoursLostTomorrow: 0,
       phoneOffDays: Math.max(0, state.phoneOffDays - 1),
       tasksToday: [],
-      today: { earned: 0, spent: 0 },
+      today: EMPTY_TODAY,
+      catchesToday: {},
+      fishPriceToday: state.fishPriceTomorrow,
+      fishPriceTomorrow: 1,
+      lastCardOutcome: null,
     },
     { on: 'day', day: nextDay },
   )
-  return refreshTasks(morning)
+  return refreshTasks(queueMoments(morning))
+}
+
+/** One-off story moments that start on this morning (Live intro, Raya's arrival). */
+function queueMoments(state: GameState): GameState {
+  const due: Moment[] = []
+  if (liveUnlocked(state)) due.push('live_intro')
+  if (reached(state, RULES.unlocks.raya)) due.push('raya_arrival')
+  const fresh = due.filter((m) => !state.momentsSeen.includes(m) && !state.moments.includes(m))
+  return fresh.length ? { ...state, moments: [...state.moments, ...fresh] } : state
 }

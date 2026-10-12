@@ -32,6 +32,15 @@ export function emptyPlots(season: number): Plot[] {
 
 export const EMPTY_LEDGER = { seedRm: 0, bajaRm: 0, cardRm: 0, interestRm: 0 }
 
+export const EMPTY_TODAY: GameState['today'] = {
+  earned: 0,
+  spent: 0,
+  farmJob: false,
+  caughtFish: false,
+  harvested: false,
+  wentLive: false,
+}
+
 export interface NewGameOptions {
   /** Tok Wan's starter seed (picked in onboarding from M6). */
   starter: VarietyId
@@ -61,9 +70,19 @@ export function createInitialState({ starter, season = 1 }: NewGameOptions): Gam
     facts: [],
     factsAtSeasonStart: 0,
     ledger: EMPTY_LEDGER,
-    today: { earned: 0, spent: 0 },
+    today: EMPTY_TODAY,
     phase: 'playing',
     ending: null,
+    fish: { keli: 0, haruan: 0, puyu: 0, sepat: 0, tilapia: 0 },
+    catchesToday: {},
+    fishPriceToday: 1,
+    fishPriceTomorrow: 1,
+    followers: 0,
+    lastLive: null,
+    moments: [],
+    momentsSeen: [],
+    rayaHere: false,
+    lastCardOutcome: null,
   }
   // The starter seed counts as a seed bought (facts.yaml).
   return refreshTasks(unlockBy(state, { on: 'buy_seed', variety: starter }))

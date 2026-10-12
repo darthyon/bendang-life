@@ -1,7 +1,7 @@
 // Season end, Tok Wan's report and the choice after it (spec §4.10).
 import { unlockBy } from './facts'
 import { RULES } from './rules'
-import { EMPTY_LEDGER, emptyPlots } from './state'
+import { EMPTY_LEDGER, EMPTY_TODAY, emptyPlots } from './state'
 import { refreshTasks } from './tasks'
 import type { GameState } from './types'
 
@@ -112,7 +112,8 @@ export function newSeason(state: GameState): GameState {
     hoursLostTomorrow: 0,
     factsAtSeasonStart: state.facts.length,
     ledger: EMPTY_LEDGER,
-    today: { earned: 0, spent: 0 },
+    today: EMPTY_TODAY,
+    catchesToday: {},
     phase: 'playing',
   })
 }

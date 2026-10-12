@@ -75,7 +75,7 @@ describe('drawing cards', () => {
     }
   })
 
-  it('keeps cards that need fishing or Live out of the M4 deck', () => {
+  it('includes the fishing cards in the deck (back since M5)', () => {
     const seen = new Set<string>()
     for (let seed = 0; seed < 300; seed++) {
       const id = drawCard(
@@ -84,8 +84,8 @@ describe('drawing cards', () => {
       )
       if (id) seen.add(id)
     }
-    expect(seen.has('kucing_oren')).toBe(false)
-    expect(seen.has('pasar_malam')).toBe(false)
+    expect(seen.has('kucing_oren')).toBe(true)
+    expect(seen.has('pasar_malam')).toBe(true)
   })
 
   it('is deterministic', () => {

@@ -2,7 +2,7 @@
 // The shape is checked at load so a YAML typo fails loudly with its path.
 import rawRules from '../../content/rules.yaml'
 import rawVarieties from '../../content/varieties.yaml'
-import type { GateId, JobId, Stage, VarietyId } from './types'
+import type { FishId, GateId, JobId, Stage, VarietyId } from './types'
 
 type Obj = Record<string, unknown>
 
@@ -79,6 +79,24 @@ export interface Rules {
   }
   loan: { maxAmount: number; seasonRate: number }
   plotsBySeason: { season: number; plots: number[] }[]
+  fishing: {
+    spots: {
+      longkang: { fish: FishId[]; catchesPerDay: number }
+      plotDrained: { fish: FishId[]; catchesPerDay: number }
+    }
+    fish: Record<FishId, { zone: number; price: number }>
+    needleSeconds: number
+    hours: { pancing: number; serkap: number }
+  }
+  live: {
+    hours: number
+    baseCoins: number
+    coinsPer10Followers: number
+    maxCoins: number
+    followersPerLive: number
+    bonusFollowers: { farmJob: number; fish: number; harvest: number }
+  }
+  raya: { ghostChance: number }
   unlocks: {
     live: { season: number; day: number }
     raya: { season: number; day: number }
@@ -102,6 +120,24 @@ export interface Variety {
 function window(v: unknown, path: string): Window {
   const o = obj(v, path)
   return { fromDay: num(at(o, 'from_day', path), path), toDay: num(at(o, 'to_day', path), path) }
+}
+
+const FISH_IDS: readonly FishId[] = ['keli', 'haruan', 'puyu', 'sepat', 'tilapia']
+
+function fishList(v: unknown, path: string): FishId[] {
+  return arr(v, path).map((f, i) => {
+    const id = str(f, `${path}[${i}]`)
+    if (!FISH_IDS.includes(id as FishId)) throw new Error(`rules: unknown fish "${id}" at ${path}`)
+    return id as FishId
+  })
+}
+
+function spot(v: unknown, path: string) {
+  const o = obj(v, path)
+  return {
+    fish: fishList(at(o, 'fish', path), `${path}.fish`),
+    catchesPerDay: num(at(o, 'catches_per_day', path), `${path}.catches_per_day`),
+  }
 }
 
 function seasonDay(v: unknown, path: string): { season: number; day: number } {
@@ -234,6 +270,63 @@ function parseRules(raw: unknown): Rules {
       maxAmount: num(at(loan, 'max_amount', 'loan'), 'loan.max_amount'),
       seasonRate: num(at(loan, 'season_rate', 'loan'), 'loan.season_rate'),
     },
+    fishing: (() => {
+      const fishing = obj(at(r, 'fishing', 'rules'), 'fishing')
+      const spots = obj(at(fishing, 'spots', 'fishing'), 'fishing.spots')
+      const fish = obj(at(fishing, 'fish', 'fishing'), 'fishing.fish')
+      const hours = (job: string) =>
+        num(
+          at(obj(at(actions, job, 'actions'), `actions.${job}`), 'hours', job),
+          `actions.${job}.hours`,
+        )
+      return {
+        spots: {
+          longkang: spot(at(spots, 'longkang', 'fishing.spots'), 'fishing.spots.longkang'),
+          plotDrained: spot(
+            at(spots, 'plot_drained', 'fishing.spots'),
+            'fishing.spots.plot_drained',
+          ),
+        },
+        fish: Object.fromEntries(
+          FISH_IDS.map((id) => {
+            const p = `fishing.fish.${id}`
+            const f = obj(at(fish, id, 'fishing.fish'), p)
+            return [
+              id,
+              {
+                zone: num(at(f, 'zone', p), `${p}.zone`),
+                price: num(at(f, 'price', p), `${p}.price`),
+              },
+            ]
+          }),
+        ) as Record<FishId, { zone: number; price: number }>,
+        needleSeconds: num(at(fishing, 'needle_seconds', 'fishing'), 'fishing.needle_seconds'),
+        hours: { pancing: hours('pancing'), serkap: hours('serkap') },
+      }
+    })(),
+    live: (() => {
+      const live = obj(at(r, 'live', 'rules'), 'live')
+      const bonus = obj(at(live, 'bonus_followers', 'live'), 'live.bonus_followers')
+      const n = (o: Obj, key: string, p: string) => num(at(o, key, p), `${p}.${key}`)
+      return {
+        hours: n(live, 'hours', 'live'),
+        baseCoins: n(live, 'base_coins', 'live'),
+        coinsPer10Followers: n(live, 'coins_per_10_followers', 'live'),
+        maxCoins: n(live, 'max_coins', 'live'),
+        followersPerLive: n(live, 'followers_per_live', 'live'),
+        bonusFollowers: {
+          farmJob: n(bonus, 'farm_job', 'live.bonus_followers'),
+          fish: n(bonus, 'fish', 'live.bonus_followers'),
+          harvest: n(bonus, 'harvest', 'live.bonus_followers'),
+        },
+      }
+    })(),
+    raya: {
+      ghostChance: num(
+        at(obj(at(r, 'hantu_raya', 'rules'), 'hantu_raya'), 'ghost_chance', 'hantu_raya'),
+        'hantu_raya.ghost_chance',
+      ),
+    },
     unlocks: {
       live: seasonDay(at(obj(at(r, 'live', 'rules'), 'live'), 'unlock', 'live'), 'live.unlock'),
       raya: seasonDay(
@@ -285,3 +378,4 @@ function parseVarieties(raw: unknown): Record<VarietyId, Variety> {
 export const RULES: Rules = parseRules(rawRules)
 export const VARIETIES: Record<VarietyId, Variety> = parseVarieties(rawVarieties)
 export const VARIETY_LIST: readonly VarietyId[] = VARIETY_IDS
+export const FISH_LIST: readonly FishId[] = FISH_IDS

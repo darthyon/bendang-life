@@ -4,6 +4,20 @@ export type VarietyId = 'mr297' | 'mr220cl2' | 'mrq76'
 export type GateId = 'A' | 'B'
 export type Stage = 'tabur' | 'anak_padi' | 'beranak_bunting' | 'masak' | 'sedia_tuai'
 export type JobId = 'bajak' | 'tanam' | 'pintu_air' | 'baja' | 'rumpai' | 'siput' | 'tuai'
+export type FishId = 'keli' | 'haruan' | 'puyu' | 'sepat' | 'tilapia'
+
+/** Where you fish: the longkang (pancing) or a drained plot (serkap). */
+export type FishSpot = { kind: 'longkang' } | { kind: 'plot'; plotId: number }
+
+/** One-off story moments shown on a morning (Live intro, Raya's arrival). */
+export type Moment = 'live_intro' | 'raya_arrival'
+
+export interface LiveResult {
+  viewers: number
+  coins: number
+  bonuses: ('farm_job' | 'fish' | 'harvest')[]
+}
+
 export type PlotStatus = 'locked' | 'empty' | 'ploughed' | 'planted' | 'harvested'
 
 export interface Plot {
@@ -99,8 +113,29 @@ export interface GameState {
   /** How many facts were known when this season started (for "new facts" in the report). */
   factsAtSeasonStart: number
   ledger: Ledger
-  /** Money in and out today, for the night recap. */
-  today: { earned: number; spent: number }
+  /** Today's money and what you did, for the recap and Live bonuses. Reset each morning. */
+  today: {
+    earned: number
+    spent: number
+    farmJob: boolean
+    caughtFish: boolean
+    harvested: boolean
+    wentLive: boolean
+  }
+  fish: Record<FishId, number>
+  /** Catches today per spot ("longkang", "plot-1" …). */
+  catchesToday: Record<string, number>
+  /** Jual Ikan price multiplier today, and the one set for tomorrow (Pasar Malam). */
+  fishPriceToday: number
+  fishPriceTomorrow: number
+  followers: number
+  lastLive: LiveResult | null
+  /** Story moments waiting to be shown, and those already seen. */
+  moments: Moment[]
+  momentsSeen: Moment[]
+  rayaHere: boolean
+  /** How tonight's card went when the outcome needs telling (Raya on watch). */
+  lastCardOutcome: 'guard_ok' | 'ghosted' | null
   phase: Phase
   /** Set when the player goes back to KL. */
   ending: { kg: number; facts: number } | null
@@ -119,3 +154,7 @@ export type Action =
   | { type: 'LOAN_TAKE'; amount: number }
   | { type: 'LOAN_REPAY'; amount: number }
   | { type: 'PASS_TIME'; hours: number }
+  | { type: 'FISH'; spot: FishSpot; fish: FishId; caught: boolean }
+  | { type: 'SELL_FISH' }
+  | { type: 'GO_LIVE' }
+  | { type: 'ACK_MOMENT' }

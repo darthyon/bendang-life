@@ -4,8 +4,9 @@ import type { ReasonKey } from './actions'
 import { stageForDay } from './calendar'
 import { FACTS, unlockBy, unlockFact } from './facts'
 import type { Rng } from './rng'
-import { arr, at, num, obj, RULES, str } from './rules'
-import type { CardKind, GameState, Plot, Stage } from './types'
+import { liveUnlocked } from './live'
+import { arr, at, FISH_LIST, num, obj, RULES, str } from './rules'
+import type { CardKind, FishId, GameState, Plot, Stage } from './types'
 
 export type Effect =
   | { type: 'water_cm'; value: number }
@@ -19,7 +20,7 @@ export type Effect =
   | { type: 'unlock_random_fact' }
   | { type: 'item'; item: 'baja_bag'; count: number }
   | { type: 'followers'; value: number; needsLive: boolean }
-  | { type: 'fish'; fish: string; count: number }
+  | { type: 'fish'; fish: FishId; count: number }
   | { type: 'fish_price_multiplier'; value: number; days: number }
 
 export interface Cost {
@@ -45,9 +46,6 @@ export interface Card {
   /** Raya can add a free "keep watch" option (M5). */
   rayaCanGuard: boolean
 }
-
-/** Effects that need systems from M5 (fishing). Cards using them stay out of the deck until then. */
-const NOT_YET: Effect['type'][] = ['fish', 'fish_price_multiplier']
 
 function parseEffect(raw: unknown, p: string): Effect {
   const o = obj(raw, p)
@@ -81,8 +79,12 @@ function parseEffect(raw: unknown, p: string): Effect {
     }
     case 'followers':
       return { type, value: value(), needsLive: o.needs_live === true }
-    case 'fish':
-      return { type, fish: str(at(o, 'fish', p), `${p}.fish`), count: num(at(o, 'count', p), p) }
+    case 'fish': {
+      const fish = str(at(o, 'fish', p), `${p}.fish`)
+      if (!FISH_LIST.includes(fish as FishId))
+        throw new Error(`events: unknown fish "${fish}" at ${p}`)
+      return { type, fish: fish as FishId, count: num(at(o, 'count', p), `${p}.count`) }
+    }
     default:
       throw new Error(`events: unknown effect "${type}" at ${p}`)
   }
@@ -137,13 +139,7 @@ function parseCards(raw: unknown): Card[] {
 
 export const CARDS: readonly Card[] = parseCards(rawEvents)
 
-function usesNotYet(effects: Effect[]): boolean {
-  return effects.some(
-    (e) => NOT_YET.includes(e.type) || (e.type === 'chance' && usesNotYet(e.then)),
-  )
-}
-
-const PLAYABLE = CARDS.filter((c) => !c.options.some((o) => usesNotYet(o.effects)))
+const PLAYABLE = CARDS
 
 export function findCard(id: string | null): Card | undefined {
   return id === null ? undefined : CARDS.find((c) => c.id === id)
@@ -177,11 +173,21 @@ export function startNight(state: GameState, rng: Rng): GameState {
 
 export const DECLINE = 'decline'
 
+/** Raya's free "keep watch" option (spec §4.7a). */
+export const RAYA_GUARD = 'raya_guard'
+
+/** The options shown on a card, including Raya's once he has moved in. */
+export function cardOptions(state: GameState, card: Card): CardOption[] {
+  return card.rayaCanGuard && state.rayaHere
+    ? [...card.options, { id: RAYA_GUARD, cost: {}, effects: [] }]
+    : card.options
+}
+
 export function canResolve(state: GameState, optionId: string): ReasonKey | null {
   const card = findCard(state.pendingCard)
   if (!card) return 'reasons.not_now'
   if (optionId === DECLINE) return card.kind === 'rezeki' ? null : 'reasons.not_now'
-  const option = card.options.find((o) => o.id === optionId)
+  const option = cardOptions(state, card).find((o) => o.id === optionId)
   if (!option) return 'reasons.not_now'
   if ((option.cost.coins ?? 0) > state.coins) return 'shop.not_enough'
   if ((option.cost.items?.baja_bag ?? 0) > state.baja) return 'reasons.no_baja'
@@ -234,12 +240,18 @@ function applyEffect(state: GameState, effect: Effect, rng: Rng): GameState {
     case 'item':
       return { ...state, baja: state.baja + effect.count }
     case 'followers':
-      // Followers arrive with Live in M5; before Live opens this gain does nothing.
-      return state
+      // A "needs_live" gain only counts once Live is open.
+      return effect.needsLive && !liveUnlocked(state)
+        ? state
+        : { ...state, followers: state.followers + effect.value }
     case 'fish':
+      return {
+        ...state,
+        fish: { ...state.fish, [effect.fish]: state.fish[effect.fish] + effect.count },
+      }
     case 'fish_price_multiplier':
-      // Not in the M4 deck (see NOT_YET).
-      return state
+      // Pasar Malam: tomorrow's Jual Ikan price.
+      return { ...state, fishPriceTomorrow: effect.value }
   }
 }
 
@@ -247,8 +259,17 @@ function applyEffect(state: GameState, effect: Effect, rng: Rng): GameState {
 export function resolveCard(state: GameState, optionId: string, rng: Rng): GameState {
   if (canResolve(state, optionId) !== null) return state
   const card = findCard(state.pendingCard)
-  const cleared: GameState = { ...state, pendingCard: null }
+  const cleared: GameState = { ...state, pendingCard: null, lastCardOutcome: null }
   if (!card || optionId === DECLINE) return cleared
+  if (optionId === RAYA_GUARD) {
+    // 1 time in 5 he was streaming and forgot: the card's Biar effect applies.
+    const ghosted = rng.next() < RULES.raya.ghostChance
+    const biar = card.options.find((o) => o.id === 'biar')
+    const outcome: GameState = { ...cleared, lastCardOutcome: ghosted ? 'ghosted' : 'guard_ok' }
+    return ghosted && biar
+      ? biar.effects.reduce((acc, e) => applyEffect(acc, e, rng), outcome)
+      : outcome
+  }
   const option = card.options.find((o) => o.id === optionId)
   if (!option) return cleared
 

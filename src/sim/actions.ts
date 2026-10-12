@@ -2,6 +2,15 @@ import { bajaStageDue, harvestTiming } from './calendar'
 import { harvestPlot } from './harvest'
 import { RULES, VARIETIES } from './rules'
 import { unlockBy } from './facts'
+import {
+  catchesLeft,
+  fishingHours,
+  fishSaleValue,
+  fishSpotOpen,
+  spotKey,
+  spotRules,
+} from './fishing'
+import { goLive, liveUnlocked } from './live'
 import { refreshTasks } from './tasks'
 import type { Action, GameState, JobId, Plot } from './types'
 
@@ -15,6 +24,8 @@ export type ReasonKey =
   | 'reasons.not_ripe'
   | 'reasons.loan_limit'
   | 'reasons.not_now'
+  | 'fishing.none_left'
+  | 'live.done_today'
 
 const JOB_OF: Partial<Record<Action['type'], JobId>> = {
   BAJAK: 'bajak',
@@ -60,16 +71,29 @@ function plotReason(state: GameState, action: PlotAction): ReasonKey | null {
   }
 }
 
-// Reasons that mean the job does not apply here at all; they win over running out of time.
-const NOT_APPLICABLE: ReasonKey[] = ['reasons.not_now', 'stages.locked', 'reasons.not_ripe']
+// Reasons that mean the action does not apply here at all; they win over running out of time.
+const NOT_APPLICABLE: ReasonKey[] = [
+  'reasons.not_now',
+  'stages.locked',
+  'reasons.not_ripe',
+  'fishing.none_left',
+  'live.done_today',
+]
+
+/** Hours an action takes from the day, or 0. */
+export function actionHours(action: Action): number {
+  const job = JOB_OF[action.type]
+  if (job) return RULES.jobHours[job]
+  if (action.type === 'FISH') return fishingHours(action.spot)
+  if (action.type === 'GO_LIVE') return RULES.live.hours
+  return 0
+}
 
 export function canApply(state: GameState, action: Action): ReasonKey | null {
   const reason = baseReason(state, action)
   if (reason && NOT_APPLICABLE.includes(reason)) return reason
-  const job = JOB_OF[action.type]
-  if (job && state.hour + RULES.jobHours[job] > RULES.clock.nightStartHour) {
-    return 'toasts.no_time'
-  }
+  const hours = actionHours(action)
+  if (hours > 0 && state.hour + hours > RULES.clock.nightStartHour) return 'toasts.no_time'
   return reason
 }
 
@@ -91,6 +115,17 @@ function baseReason(state: GameState, action: Action): ReasonKey | null {
     case 'LOAN_REPAY':
       if (!(action.amount > 0) || action.amount > state.loan.balance) return 'reasons.not_now'
       return state.coins >= action.amount ? null : 'shop.not_enough'
+    case 'FISH':
+      if (!fishSpotOpen(state, action.spot)) return 'reasons.not_now'
+      if (!spotRules(action.spot).fish.includes(action.fish)) return 'reasons.not_now'
+      return catchesLeft(state, action.spot) > 0 ? null : 'fishing.none_left'
+    case 'SELL_FISH':
+      return Object.values(state.fish).some((n) => n > 0) ? null : 'reasons.not_now'
+    case 'GO_LIVE':
+      if (!liveUnlocked(state)) return 'reasons.not_now'
+      return state.today.wentLive ? 'live.done_today' : null
+    case 'ACK_MOMENT':
+      return state.moments.length > 0 ? null : 'reasons.not_now'
     default:
       return plotReason(state, action)
   }
@@ -113,6 +148,9 @@ function unlockFactsFor(state: GameState, action: Action): GameState {
   if (action.type === 'BUY_BENIH')
     return unlockBy(state, { on: 'buy_seed', variety: action.variety })
   if (action.type === 'LOAN_TAKE') return unlockBy(state, { on: 'loan' })
+  if (action.type === 'FISH' && action.spot.kind === 'plot') {
+    return unlockBy(state, { on: 'action', job: 'serkap' })
+  }
   return state
 }
 
@@ -127,7 +165,10 @@ function spend(state: GameState, rm: number, line: 'seedRm' | 'bajaRm'): GameSta
 
 function reduce(state: GameState, action: Action): GameState {
   const job = JOB_OF[action.type]
-  const s: GameState = job ? { ...state, hour: state.hour + RULES.jobHours[job] } : state
+  const hours = actionHours(action)
+  let s: GameState = hours > 0 ? { ...state, hour: state.hour + hours } : state
+  // Live bonus: at least one farm job today.
+  if (job) s = { ...s, today: { ...s.today, farmJob: true } }
 
   switch (action.type) {
     case 'BAJAK':
@@ -189,5 +230,36 @@ function reduce(state: GameState, action: Action): GameState {
         coins: s.coins - action.amount,
         loan: { ...s.loan, balance: s.loan.balance - action.amount },
       }
+    case 'FISH': {
+      if (!action.caught) return s
+      const key = spotKey(action.spot)
+      return {
+        ...s,
+        fish: { ...s.fish, [action.fish]: s.fish[action.fish] + 1 },
+        catchesToday: { ...s.catchesToday, [key]: (s.catchesToday[key] ?? 0) + 1 },
+        today: { ...s.today, caughtFish: true },
+      }
+    }
+    case 'SELL_FISH': {
+      const rm = fishSaleValue(s)
+      return {
+        ...s,
+        coins: s.coins + rm,
+        fish: { keli: 0, haruan: 0, puyu: 0, sepat: 0, tilapia: 0 },
+        today: { ...s.today, earned: s.today.earned + rm },
+      }
+    }
+    case 'GO_LIVE':
+      return goLive(s)
+    case 'ACK_MOMENT': {
+      const [moment, ...rest] = s.moments
+      if (!moment) return state
+      return {
+        ...s,
+        moments: rest,
+        momentsSeen: [...s.momentsSeen, moment],
+        rayaHere: s.rayaHere || moment === 'raya_arrival',
+      }
+    }
   }
 }

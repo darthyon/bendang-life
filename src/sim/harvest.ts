@@ -86,7 +86,7 @@ export function harvestPlot(state: GameState, plot: Plot): GameState {
     coins: state.coins + netToPlayerRm,
     loan: { balance, interestCharged },
     ledger: { ...state.ledger, interestRm: state.ledger.interestRm + loanInterestRm },
-    today: { ...state.today, earned: state.today.earned + proceeds },
+    today: { ...state.today, earned: state.today.earned + proceeds, harvested: true },
     plots: state.plots.map((p) => (p.id === plot.id ? { ...p, status: 'harvested' } : p)),
     harvests: [...state.harvests, result],
   }
