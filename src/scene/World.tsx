@@ -28,6 +28,7 @@ export function World() {
   const targetRef = useRef<Target | null>(null)
   const game = useGame((s) => s.game)
   const setPlotPanel = useGame((s) => s.setPlotPanel)
+  const night = useGame((s) => s.ui.night !== null)
   const job = target ? primaryJob(game, target) : null
 
   useEffect(() => {
@@ -62,8 +63,8 @@ export function World() {
 
   return (
     <>
-      <color attach="background" args={[PALETTE.sky]} />
-      <Lighting focus={player} />
+      <color attach="background" args={[night ? PALETTE.nightSky : PALETTE.sky]} />
+      <Lighting focus={player} night={night} />
       <CameraRig focus={player} />
       <Island />
       {PLOTS.map((p) => {

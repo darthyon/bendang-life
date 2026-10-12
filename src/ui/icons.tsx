@@ -137,3 +137,41 @@ export const FarmerIcon = (p: IconProps) => (
     <path d="M6 21c.7-2.6 3.2-4.2 6-4.2s5.3 1.6 6 4.2" />
   </Svg>
 )
+
+export const SunIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" />
+  </Svg>
+)
+
+export const RainIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M7 14.5a4 4 0 0 1-.4-8A5.5 5.5 0 0 1 17 7.5a3.5 3.5 0 0 1 .5 7H7Z" />
+    <path d="m8 17.5-1 2.5M12 17.5l-1 2.5M16 17.5l-1 2.5" />
+  </Svg>
+)
+
+export const RatIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M4 15.5c0-3.6 3.4-6.5 7.5-6.5 3 0 5.4 1.4 6.6 3.5L21 14l-2.7 1.2c-.9 1.5-2.9 2.3-6.8 2.3H6" />
+    <circle cx="9.5" cy="8" r="1.8" />
+    <path d="M4 15.5c-1.4 0-2 1.2-1.5 2.5" />
+    <circle cx="17.2" cy="12.8" r=".4" fill="currentColor" />
+  </Svg>
+)
+
+export const PeopleIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="9" cy="8.5" r="3" />
+    <circle cx="16.5" cy="9.5" r="2.4" />
+    <path d="M3.5 19c.6-3 2.9-5 5.5-5s4.9 2 5.5 5M14.5 14.3c.6-.2 1.3-.3 2-.3 2.2 0 4 1.6 4.5 4" />
+  </Svg>
+)
+
+export const BookIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M4.5 5.5c2.6-1 5.2-1 7.5.6 2.3-1.6 4.9-1.6 7.5-.6v13c-2.6-1-5.2-1-7.5.6-2.3-1.6-4.9-1.6-7.5-.6Z" />
+    <path d="M12 6.1v13" />
+  </Svg>
+)

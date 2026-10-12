@@ -145,6 +145,7 @@ actions:
   tidur: "Tidoq"
 
 phone:                    # TODO proofread
+  no_signal: "Fon hang mati. Lagi {n} hari baru hidup."  # TODO proofread
   title: "Fon"
   app_kedai: "Kedai Tani"
   app_bank: "Agribank"
@@ -183,6 +184,33 @@ bank:
   repay_all: "Langsai semua"  # TODO proofread
 
 night:
+  recap_title: "Malam ni"  # TODO proofread
+  recap_water: "Ayaq {from} → {to} cm"  # TODO proofread
+  recap_gate_open: "pintu {gate} bukak"  # TODO proofread
+  recap_gate_closed: "pintu {gate} tutup"  # TODO proofread
+  recap_health: "Sihat {from} → {to}"  # TODO proofread
+  cause_water_low: "ayaq kurang"  # TODO proofread
+  cause_water_high: "ayaq dalam sangat"  # TODO proofread
+  cause_weeds: "rumpai"  # TODO proofread
+  cause_snails: "siput"  # TODO proofread
+  cause_card: "bala malam ni"  # TODO proofread
+  recap_new_weeds: "{n} tompok rumpai baru"  # TODO proofread
+  recap_new_snails: "{n} tompok siput baru"  # TODO proofread
+  recap_money: "Hari ni: +RM{earned} · −RM{spent}"  # TODO proofread
+  recap_tomorrow: "Esok"  # TODO proofread
+  recap_nothing_due: "Takdak apa lagi."  # TODO proofread
+  wake: "Bangun pagi"  # TODO proofread
+  cost_free: "Free"  # TODO proofread
+  cost_hours_days: "−{h} jam sehari, {n} hari"  # TODO proofread
+  effect_water: "{cm} cm ayaq"  # TODO proofread
+  effect_water_day: "{cm} cm ayaq satu malam, {n} malam"  # TODO proofread
+  effect_health: "{n} sihat"  # TODO proofread
+  effect_health_day: "{n} sihat satu malam, {d} malam"  # TODO proofread
+  effect_yield: "{n}% hasil"  # TODO proofread
+  effect_phone_off: "Takdak fon {n} hari"  # TODO proofread
+  effect_chance: "Peluang {n}%:"  # TODO proofread
+  effect_baja: "+{n} guni baja"  # TODO proofread
+  effect_fact: "Nota Kitab baru"  # TODO proofread
   bala_title: "Ada benda jadi malam tadi"
   bala_body: "Hang nak buat lagu mana?"
   rezeki_title: "Ada orang mai malam ni"

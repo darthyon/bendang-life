@@ -10,6 +10,7 @@ export interface RecapPlot {
   plotId: number
   waterFrom: number
   waterTo: number
+  gateId: GateId | null
   gateOpen: boolean
   healthFrom: number
   healthTo: number
@@ -51,6 +52,7 @@ export function buildRecap(before: GameState, after: GameState): Recap {
         plotId: p.id,
         waterFrom: p.waterCm,
         waterTo: next.waterCm,
+        gateId: gate,
         gateOpen: gate !== null && before.gates[gate],
         healthFrom: p.health,
         healthTo: next.health,

@@ -1,6 +1,7 @@
 // Grey-box colours sampled from docs/refs/01-day-hud.png. Replaced by the shared palette at M7.
 export const PALETTE = {
   sky: '#8a9f78',
+  nightSky: '#1d2740',
   sea: '#6f9c9a',
   grass: '#7f9a52',
   soil: '#8a6a45',

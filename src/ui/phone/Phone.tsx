@@ -14,6 +14,7 @@ export function Phone() {
   const open = useGame((s) => s.ui.phoneOpen)
   const setPhone = useGame((s) => s.setPhone)
   const [app, setApp] = useState<App>('home')
+  const phoneOffDays = useGame((s) => s.game.phoneOffDays)
   if (!open) return null
 
   const title =
@@ -55,9 +56,15 @@ export function Phone() {
           </button>
         </header>
         <div className="phone__screen">
-          {app === 'home' && <Home onOpen={setApp} />}
-          {app === 'kedai' && <Kedai />}
-          {app === 'bank' && <Bank />}
+          {phoneOffDays > 0 ? (
+            <p className="phone__dead">{t('phone.no_signal', { n: phoneOffDays })}</p>
+          ) : (
+            <>
+              {app === 'home' && <Home onOpen={setApp} />}
+              {app === 'kedai' && <Kedai />}
+              {app === 'bank' && <Bank />}
+            </>
+          )}
         </div>
       </section>
     </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { t } from '../../i18n'
 import { waterTarget, stageForDay } from '../../sim/calendar'
+import { DECLINE, findCard } from '../../sim/events'
 import { RULES, VARIETY_LIST } from '../../sim/rules'
 import type { Action, GameState, Plot, PlotStatus, VarietyId } from '../../sim/types'
 import { useGame } from '../../state/store'
@@ -88,6 +89,18 @@ function formatHour(hour: number): string {
   return `${h}:${String(m).padStart(2, '0')}`
 }
 
+/** Play through a night without the scene: take the first free option (or decline), then wake. */
+function skipNight() {
+  const store = useGame.getState()
+  store.sleep()
+  const card = findCard(useGame.getState().game.pendingCard)
+  if (card) {
+    const free = card.options.find((o) => !o.cost.coins && !o.cost.items)
+    useGame.getState().chooseCard(card.kind === 'rezeki' ? DECLINE : (free?.id ?? DECLINE))
+  }
+  useGame.getState().wake()
+}
+
 function patchPlot(game: GameState, id: number, patch: Partial<Plot>): GameState {
   return { ...game, plots: game.plots.map((p) => (p.id === id ? { ...p, ...patch } : p)) }
 }
@@ -99,7 +112,7 @@ export default function DebugPanel() {
   const [loanAmount, setLoanAmount] = useState(500)
   const [variety, setVariety] = useState<VarietyId>('mr297')
   const [drawCalls, setDrawCalls] = useState(0)
-  const { game, dispatch, sleep, debugSet } = useGame()
+  const { game, dispatch, debugSet } = useGame()
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -150,12 +163,17 @@ export default function DebugPanel() {
 
       <h3 style={S.h}>Time</h3>
       <div style={S.row}>
-        <Btn onClick={sleep}>Sleep (next day)</Btn>
+        <Btn onClick={skipNight}>Sleep (next day)</Btn>
         <NumField label="to day" value={jumpTo} onChange={setJumpTo} />
         <Btn
           onClick={() => {
             const target = Math.max(1, Math.min(jumpTo, RULES.season.days + 10))
-            while (useGame.getState().game.day < target) useGame.getState().sleep()
+            while (
+              useGame.getState().game.day < target &&
+              useGame.getState().game.phase === 'playing'
+            ) {
+              skipNight()
+            }
           }}
         >
           Jump
